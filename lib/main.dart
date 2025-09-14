@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
   runApp(MyApp());
@@ -358,6 +359,28 @@ class _SearchBarAppState extends State<SearchBarApp> {
                     },
               ),
               SizedBox(height: 24),
+              // Google Maps below the search bar
+              SizedBox(
+                height: 350,
+                child: GoogleMap(
+                  initialCameraPosition: const CameraPosition(
+                    target: LatLng(10.503055391390058, 124.02984872550603),
+                    zoom: 16.0,
+                  ),
+                  markers: {
+                    const Marker(
+                      markerId: MarkerId('targetLocation'),
+                      position: LatLng(10.503055391390058, 124.02984872550603),
+                      infoWindow: InfoWindow(
+                        title: 'Cebu Technological University - Danao Campus',
+                        snippet: 'Cebu Technological University - Danao Campus',
+                      ),
+                    ),
+                  },
+                ),
+              ),
+              SizedBox(height: 24),
+
               // Add some space between the search bar and the status text
               Text(
                 'Status',
@@ -431,9 +454,10 @@ class _SearchBarAppState extends State<SearchBarApp> {
                   SizedBox(height: 48),
                 ],
               ),
+              SizedBox(height: 32),
               ElevatedButton(
                 onPressed: () {
-                  // pseudo login action
+                  // pseudo start
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => ControlsTabPage()),
@@ -496,6 +520,12 @@ class ManualControlsPage extends StatefulWidget {
 class _ManualControlsPageState extends State<ManualControlsPage> {
   @override
   Widget build(BuildContext context) {
+    // Define the target location (latitude and longitude)
+    const LatLng targetLocation = LatLng(
+      10.503055391390058,
+      124.02984872550603,
+    ); // Cebu Technological University - Danao Campus
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -505,11 +535,21 @@ class _ManualControlsPageState extends State<ManualControlsPage> {
         backgroundColor: const Color.fromARGB(255, 0, 0, 0),
         automaticallyImplyLeading: false,
       ),
-      body: const Center(
-        child: Text(
-          'Manual Controls Page',
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      body: GoogleMap(
+        initialCameraPosition: const CameraPosition(
+          target: targetLocation,
+          zoom: 16.0, // Zoom level
         ),
+        markers: {
+          Marker(
+            markerId: const MarkerId('targetLocation'),
+            position: targetLocation,
+            infoWindow: const InfoWindow(
+              title: 'Cebu Technological University - Danao Campus',
+              snippet: 'Cebu Technological University - Danao Campus',
+            ),
+          ),
+        },
       ),
     );
   }

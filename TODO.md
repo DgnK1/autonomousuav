@@ -1,0 +1,4 @@
+- [x] Make SearchBarApp responsive: use MediaQuery for padding, map height (30% screen height), status layout with flexible widths
+- [x] Make LoginPage responsive: wrap in SingleChildScrollView, adjust text sizes and spacing based on screen size
+- [x] Ensure ManualControlsPage and other pages are responsive
+- [ ] Test responsiveness on different screen sizes
