@@ -1,6 +1,6 @@
 # autonomousuav
 
-A new Flutter project.
+A Flutter App for Controlling An Autonomous Drone
 
 ## Getting Started
 
