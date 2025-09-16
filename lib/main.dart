@@ -314,21 +314,6 @@ class _HomePageState extends State<HomePage> {
                   controller.openView();
                 },
                 leading: const Icon(Icons.search),
-                trailing: <Widget>[
-                  Tooltip(
-                    message: 'Change brightness mode',
-                    child: IconButton(
-                      isSelected: isDark,
-                      onPressed: () {
-                        setState(() {
-                          isDark = !isDark;
-                        });
-                      },
-                      icon: const Icon(Icons.wb_sunny_outlined),
-                      selectedIcon: const Icon(Icons.brightness_2_outlined),
-                    ),
-                  ),
-                ],
               );
             },
             suggestionsBuilder:
@@ -545,40 +530,102 @@ class SettingsPage extends StatefulWidget {
 }
 
 class _SettingsPageState extends State<SettingsPage> {
+  bool notification = false;
+  bool darkMode = false;
+
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color.fromARGB(255, 0, 1, 2),
-        automaticallyImplyLeading: false,
+        title: const Text('Settings'),
+        backgroundColor: isDark ? Color(0xFF121212) : Colors.white,
+        foregroundColor: isDark ? Colors.white : Colors.black,
+        leading: BackButton(),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: () {
-                // Navigate back to the login page
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  MaterialPageRoute(builder: (context) => const LoginPage()),
-                  (route) => false, // Remove all previous routes
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-              ),
-              child: const Text(
-                'Exit',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-            ),
-          ],
-        ),
+      body: ListView(
+        children: [
+          SwitchListTile(
+            title: Text('Notification'),
+            secondary: Icon(Icons.notifications),
+            value: notification,
+            onChanged: (bool value) {
+              setState(() {
+                notification = value;
+              });
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.dark_mode),
+            title: Text('Dark Mode'),
+            onTap: () {
+              setState(() {
+                darkMode = !darkMode;
+              });
+              // You can add actual dark mode toggle logic here if needed
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.star),
+            title: Text('Rate App'),
+            onTap: () {
+              // Add rate app logic
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.share),
+            title: Text('Share App'),
+            onTap: () {
+              // Add share app logic
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.lock),
+            title: Text('Privacy Policy'),
+            onTap: () {
+              // Add privacy policy logic
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.description),
+            title: Text('Terms and Conditions'),
+            onTap: () {
+              // Add terms and conditions logic
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.insert_drive_file),
+            title: Text('Cookies Policy'),
+            onTap: () {
+              // Add cookies policy logic
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.mail),
+            title: Text('Contact'),
+            onTap: () {
+              // Add contact logic
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.feedback),
+            title: Text('Feedback'),
+            onTap: () {
+              // Add feedback logic
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text('Logout'),
+            onTap: () {
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+                (route) => false,
+              );
+            },
+          ),
+        ],
       ),
     );
   }
