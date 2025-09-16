@@ -20,7 +20,7 @@ class _SettingsPageState extends State<SettingsPage> {
         title: const Text('Settings'),
         backgroundColor: isDark ? Color(0xFF121212) : Colors.white,
         foregroundColor: isDark ? Colors.white : Colors.black,
-        leading: BackButton(),
+        automaticallyImplyLeading: false,
       ),
       body: ListView(
         children: [
