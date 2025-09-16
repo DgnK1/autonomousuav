@@ -106,9 +106,7 @@ class LoginPageState extends State<LoginPage> {
                     // pseudo login action
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => ControlsTabPage(),
-                      ),
+                      MaterialPageRoute(builder: (context) => MainApp()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -155,9 +153,7 @@ class LoginPageState extends State<LoginPage> {
                     //pseudo Google login
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => ControlsTabPage(),
-                      ),
+                      MaterialPageRoute(builder: (context) => MainApp()),
                     );
                   },
                   icon: Icon(
@@ -240,20 +236,20 @@ class LoginPageState extends State<LoginPage> {
   }
 }
 
-class ControlsTabPage extends StatefulWidget {
-  const ControlsTabPage({super.key});
+class MainApp extends StatefulWidget {
+  const MainApp({super.key});
 
   @override
-  State<ControlsTabPage> createState() => _ControlsTabPageState();
+  State<MainApp> createState() => _MainApp();
 }
 
-// Update the ControlsTabPage class to include the ActivityPage
-class _ControlsTabPageState extends State<ControlsTabPage> {
+// MainApp
+class _MainApp extends State<MainApp> {
   int _currentIndex = 0;
 
   final List<Widget> _pages = [
-    const SearchBarApp(), // Home Page
-    const ActivityPage(), // new ActivityPage
+    const HomePage(), // Home Page
+    const ActivityPage(), // ActivityPage
     const ManualControlsPage(), // Manual Controls Page
     const SettingsPage(), // Settings Page
   ];
@@ -287,203 +283,189 @@ class _ControlsTabPageState extends State<ControlsTabPage> {
   }
 }
 
-// Move the SearchBarApp class outside of ControlsTabPage
-class SearchBarApp extends StatefulWidget {
-  const SearchBarApp({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
 
   @override
-  State<SearchBarApp> createState() => _SearchBarAppState();
+  State<HomePage> createState() => _HomePageState();
 }
 
-class _SearchBarAppState extends State<SearchBarApp> {
+class _HomePageState extends State<HomePage> {
   bool isDark = false;
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData themeData = ThemeData(
-      brightness: isDark ? Brightness.dark : Brightness.light,
-    );
-
-    return MaterialApp(
-      theme: themeData,
-      home: Scaffold(
-        appBar: AppBar(),
-        body: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: [
-              SearchAnchor(
-                builder: (BuildContext context, SearchController controller) {
-                  return SearchBar(
-                    controller: controller,
-                    padding: const WidgetStatePropertyAll<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 16.0),
-                    ),
-                    onTap: () {
-                      controller.openView();
-                    },
-                    onChanged: (_) {
-                      controller.openView();
-                    },
-                    leading: const Icon(Icons.search),
-                    trailing: <Widget>[
-                      Tooltip(
-                        message: 'Change brightness mode',
-                        child: IconButton(
-                          isSelected: isDark,
-                          onPressed: () {
-                            setState(() {
-                              isDark = !isDark;
-                            });
-                          },
-                          icon: const Icon(Icons.wb_sunny_outlined),
-                          selectedIcon: const Icon(Icons.brightness_2_outlined),
-                        ),
-                      ),
-                    ],
-                  );
-                },
-                suggestionsBuilder:
-                    (BuildContext context, SearchController controller) {
-                      return List<ListTile>.generate(5, (int index) {
-                        final String item = 'item $index';
-                        return ListTile(
-                          title: Text(item),
-                          onTap: () {
-                            setState(() {
-                              // Add your code here
-                            });
-                          },
-                        );
-                      });
-                    },
-              ),
-              SizedBox(height: 24),
-              // Google Maps below the search bar
-              SizedBox(
-                height: 350,
-                child: GoogleMap(
-                  initialCameraPosition: const CameraPosition(
-                    target: LatLng(10.503055391390058, 124.02984872550603),
-                    zoom: 16.0,
-                  ),
-                  markers: {
-                    const Marker(
-                      markerId: MarkerId('targetLocation'),
-                      position: LatLng(10.503055391390058, 124.02984872550603),
-                      infoWindow: InfoWindow(
-                        title: 'Cebu Technological University - Danao Campus',
-                        snippet: 'Cebu Technological University - Danao Campus',
-                      ),
-                    ),
-                  },
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          SizedBox(height: 64),
+          SearchAnchor(
+            builder: (BuildContext context, SearchController controller) {
+              return SearchBar(
+                controller: controller,
+                padding: const WidgetStatePropertyAll<EdgeInsets>(
+                  EdgeInsets.symmetric(horizontal: 16.0),
                 ),
+                onTap: () {
+                  controller.openView();
+                },
+                onChanged: (_) {
+                  controller.openView();
+                },
+                leading: const Icon(Icons.search),
+                trailing: <Widget>[
+                  Tooltip(
+                    message: 'Change brightness mode',
+                    child: IconButton(
+                      isSelected: isDark,
+                      onPressed: () {
+                        setState(() {
+                          isDark = !isDark;
+                        });
+                      },
+                      icon: const Icon(Icons.wb_sunny_outlined),
+                      selectedIcon: const Icon(Icons.brightness_2_outlined),
+                    ),
+                  ),
+                ],
+              );
+            },
+            suggestionsBuilder:
+                (BuildContext context, SearchController controller) {
+                  return List<ListTile>.generate(5, (int index) {
+                    final String item = 'item $index';
+                    return ListTile(
+                      title: Text(item),
+                      onTap: () {
+                        setState(() {
+                          // Add your code here
+                        });
+                      },
+                    );
+                  });
+                },
+          ),
+          SizedBox(height: 24),
+          // Google Maps below the search bar
+          SizedBox(
+            height: 350,
+            child: GoogleMap(
+              initialCameraPosition: const CameraPosition(
+                target: LatLng(10.503055391390058, 124.02984872550603),
+                zoom: 16.0,
               ),
-              SizedBox(height: 24),
+              markers: {
+                const Marker(
+                  markerId: MarkerId('targetLocation'),
+                  position: LatLng(10.503055391390058, 124.02984872550603),
+                  infoWindow: InfoWindow(
+                    title: 'Cebu Technological University - Danao Campus',
+                    snippet: 'Cebu Technological University - Danao Campus',
+                  ),
+                ),
+              },
+            ),
+          ),
+          SizedBox(height: 24),
 
-              // Add some space between the search bar and the status text
-              Text(
-                'Status',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              Row(
+          // Add some space between the search bar and the status text
+          Text(
+            'Status',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  Row(
                     children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.water_drop,
-                            size: 40,
-                            color: Color.fromARGB(255, 41, 41, 49),
-                          ),
-                          Text(
-                            '60%',
-                            style: TextStyle(
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24,
-                              color: Color(0xFF1C1C1C),
-                            ),
-                          ),
-                        ],
+                      Icon(
+                        Icons.water_drop,
+                        size: 40,
+                        color: Color.fromARGB(255, 41, 41, 49),
                       ),
-                      SizedBox(height: 48),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.thermostat,
-                            size: 40,
-                            color: Color.fromARGB(255, 255, 0, 0),
-                          ),
-                          Text(
-                            '25°C',
-                            style: TextStyle(
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24,
-                              color: Color(0xFF1C1C1C),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  Spacer(), // Take up the remaining space
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(Icons.battery_6_bar, size: 40),
-                          Text(
-                            '85%',
-                            style: TextStyle(
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.bold,
-                              fontSize: 24,
-                              color: Color(0xFF1C1C1C),
-                            ),
-                          ),
-                        ],
+                      Text(
+                        '60%',
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          color: Color(0xFF1C1C1C),
+                        ),
                       ),
                     ],
                   ),
                   SizedBox(height: 48),
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.thermostat,
+                        size: 40,
+                        color: Color.fromARGB(255, 255, 0, 0),
+                      ),
+                      Text(
+                        '25°C',
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          color: Color(0xFF1C1C1C),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
-              SizedBox(height: 32),
-              ElevatedButton(
-                onPressed: () {
-                  // pseudo start
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => ControlsTabPage()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Color.fromARGB(255, 0, 0, 0),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4),
+              Spacer(), // Take up the remaining space
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Icon(Icons.battery_6_bar, size: 40),
+                      Text(
+                        '85%',
+                        style: TextStyle(
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          color: Color(0xFF1C1C1C),
+                        ),
+                      ),
+                    ],
                   ),
-                  minimumSize: Size(0, 0),
-                  padding: EdgeInsets.symmetric(horizontal: 48, vertical: 12),
-                ),
-                child: Text(
-                  'START',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                ],
               ),
-              SizedBox(height: 26),
+              SizedBox(height: 48),
             ],
           ),
-        ),
+          SizedBox(height: 32),
+          ElevatedButton(
+            onPressed: () {
+              // pseudo start
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Color.fromARGB(255, 0, 0, 0),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              minimumSize: Size(0, 0),
+              padding: EdgeInsets.symmetric(horizontal: 48, vertical: 12),
+            ),
+            child: Text(
+              'START',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          SizedBox(height: 26),
+        ],
       ),
     );
   }
