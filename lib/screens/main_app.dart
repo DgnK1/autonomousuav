@@ -39,7 +39,7 @@ class _MainApp extends State<MainApp> {
             icon: Icon(Icons.show_chart_rounded),
             label: 'ACTIVITY',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.map), label: 'MANUAL'),
+          BottomNavigationBarItem(icon: Icon(Icons.gamepad), label: 'MANUAL'),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: 'SETTINGS',

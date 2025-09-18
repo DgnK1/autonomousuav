@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                       Icon(
                         Icons.water_drop,
                         size: 40,
-                        color: Color.fromARGB(255, 41, 41, 49),
+                        color: Color.fromARGB(255, 0, 0, 163),
                       ),
                       Text(
                         '60%',
