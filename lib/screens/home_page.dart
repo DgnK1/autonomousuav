@@ -18,41 +18,9 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         children: [
           SizedBox(height: 64),
-          SearchAnchor(
-            builder: (BuildContext context, SearchController controller) {
-              return SearchBar(
-                controller: controller,
-                padding: const WidgetStatePropertyAll<EdgeInsets>(
-                  EdgeInsets.symmetric(horizontal: 16.0),
-                ),
-                onTap: () {
-                  controller.openView();
-                },
-                onChanged: (_) {
-                  controller.openView();
-                },
-                leading: const Icon(Icons.search),
-              );
-            },
-            suggestionsBuilder:
-                (BuildContext context, SearchController controller) {
-                  return List<ListTile>.generate(5, (int index) {
-                    final String item = 'item $index';
-                    return ListTile(
-                      title: Text(item),
-                      onTap: () {
-                        setState(() {
-                          // Add your code here
-                        });
-                      },
-                    );
-                  });
-                },
-          ),
-          SizedBox(height: 24),
           // Google Maps below the search bar
           SizedBox(
-            height: 350,
+            height: 400,
             child: GoogleMap(
               initialCameraPosition: const CameraPosition(
                 target: LatLng(10.503055391390058, 124.02984872550603),
@@ -75,8 +43,9 @@ class _HomePageState extends State<HomePage> {
           // Add some space between the search bar and the status text
           Text(
             'Status',
-            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
           ),
+          SizedBox(height: 24),
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -87,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       Icon(
                         Icons.water_drop,
-                        size: 40,
+                        size: 36,
                         color: Color.fromARGB(255, 0, 0, 163),
                       ),
                       Text(
@@ -95,18 +64,18 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                          fontSize: 36,
                           color: Color(0xFF1C1C1C),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(height: 48),
+                  SizedBox(height: 24),
                   Row(
                     children: [
                       Icon(
                         Icons.thermostat,
-                        size: 40,
+                        size: 36,
                         color: Color.fromARGB(255, 255, 0, 0),
                       ),
                       Text(
@@ -114,7 +83,7 @@ class _HomePageState extends State<HomePage> {
                         style: TextStyle(
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                          fontSize: 36,
                           color: Color(0xFF1C1C1C),
                         ),
                       ),
@@ -128,13 +97,13 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Row(
                     children: [
-                      Icon(Icons.battery_6_bar, size: 40),
+                      Icon(Icons.battery_6_bar, size: 36),
                       Text(
                         '85%',
                         style: TextStyle(
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.bold,
-                          fontSize: 24,
+                          fontSize: 36,
                           color: Color(0xFF1C1C1C),
                         ),
                       ),
@@ -142,10 +111,10 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
-              SizedBox(height: 48),
+              SizedBox(height: 8),
             ],
           ),
-          SizedBox(height: 32),
+          SizedBox(height: 8),
           ElevatedButton(
             onPressed: () {
               // pseudo start
@@ -167,7 +136,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          SizedBox(height: 26),
+          SizedBox(height: 8),
         ],
       ),
     );

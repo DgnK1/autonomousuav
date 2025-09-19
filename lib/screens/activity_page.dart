@@ -17,6 +17,21 @@ class ActivityPage extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 20),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 8.0),
+              child: Text(
+                'Drone Footage',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+              ),
+            ),
+            // Animated GIF under the table
+            Center(
+              child: Image.asset(
+                'assets/gifs/droneflyby.gif',
+                height: 240,
+                fit: BoxFit.contain,
+              ),
+            ),
             Expanded(
               child: SingleChildScrollView(
                 child: Column(
@@ -163,24 +178,6 @@ class ActivityPage extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 24),
-                    Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        'Drone Footage',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                        ),
-                      ),
-                    ),
-                    // Animated GIF under the table
-                    Center(
-                      child: Image.asset(
-                        'assets/gifs/droneflyby.gif',
-                        height: 240,
-                        fit: BoxFit.contain,
-                      ),
-                    ),
                   ],
                 ),
               ),
