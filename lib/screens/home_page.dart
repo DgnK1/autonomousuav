@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../widgets/app_header.dart';
+import '../widgets/notifications_sheet.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,133 +13,235 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   bool isDark = false;
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
+  Widget _statCard({
+    required IconData icon,
+    required Color iconColor,
+    required String title,
+    required String value,
+    required Color valueColor,
+  }) {
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color(0xFFF5F5F5),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.black12),
+      ),
+      padding: const EdgeInsets.all(12),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(height: 64),
-          // Google Maps below the search bar
-          SizedBox(
-            height: 400,
-            child: GoogleMap(
-              initialCameraPosition: const CameraPosition(
-                target: LatLng(10.503055391390058, 124.02984872550603),
-                zoom: 16.0,
-              ),
-              markers: {
-                const Marker(
-                  markerId: MarkerId('targetLocation'),
-                  position: LatLng(10.503055391390058, 124.02984872550603),
-                  infoWindow: InfoWindow(
-                    title: 'Cebu Technological University - Danao Campus',
-                    snippet: 'Cebu Technological University - Danao Campus',
-                  ),
-                ),
-              },
-            ),
-          ),
-          SizedBox(height: 24),
-
-          // Add some space between the search bar and the status text
-          Text(
-            'Status',
-            style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 24),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.water_drop,
-                        size: 36,
-                        color: Color.fromARGB(255, 0, 0, 163),
-                      ),
-                      Text(
-                        '60%',
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 36,
-                          color: Color(0xFF1C1C1C),
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 24),
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.thermostat,
-                        size: 36,
-                        color: Color.fromARGB(255, 255, 0, 0),
-                      ),
-                      Text(
-                        '25°C',
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 36,
-                          color: Color(0xFF1C1C1C),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              Icon(icon, color: iconColor, size: 24),
+              const SizedBox(width: 8),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 12,
+                  color: Colors.black87,
+                ),
               ),
-              Spacer(), // Take up the remaining space
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Icon(Icons.battery_6_bar, size: 36),
-                      Text(
-                        '85%',
-                        style: TextStyle(
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.bold,
-                          fontSize: 36,
-                          color: Color(0xFF1C1C1C),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
             ],
           ),
-          SizedBox(height: 8),
-          ElevatedButton(
-            onPressed: () {
-              // pseudo start
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Color.fromARGB(255, 0, 0, 0),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4),
-              ),
-              minimumSize: Size(0, 0),
-              padding: EdgeInsets.symmetric(horizontal: 48, vertical: 12),
-            ),
+          const SizedBox(height: 8),
+          Align(
+            alignment: Alignment.center,
             child: Text(
-              'START',
+              value,
+              textAlign: TextAlign.center,
               style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+                fontSize: 36,
+                fontWeight: FontWeight.w900,
+                color: valueColor,
+                letterSpacing: 0.5,
               ),
             ),
           ),
-          SizedBox(height: 8),
         ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ColoredBox(
+      color: const Color(0xFFF2F2F2),
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Header (shared) with notifications action
+            AppHeader(
+              title: 'Dashboard',
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.notifications, color: Colors.white),
+                  onPressed: () => showNotificationsSheet(context),
+                ),
+              ],
+            ),
+
+            // Content with page padding
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Map (kept intact)
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: SizedBox(
+                        height: 250,
+                        child: GoogleMap(
+                          initialCameraPosition: const CameraPosition(
+                            target: LatLng(
+                              10.503055391390058,
+                              124.02984872550603,
+                            ),
+                            zoom: 16.0,
+                          ),
+                          markers: {
+                            const Marker(
+                              markerId: MarkerId('targetLocation'),
+                              position: LatLng(
+                                10.503055391390058,
+                                124.02984872550603,
+                              ),
+                              infoWindow: InfoWindow(
+                                title:
+                                    'Cebu Technological University - Danao Campus',
+                                snippet:
+                                    'Cebu Technological University - Danao Campus',
+                              ),
+                            ),
+                          },
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+
+                    // Stats grid (responsive tile height)
+                    Builder(
+                      builder: (context) {
+                        final tiles = <Widget>[
+                          _statCard(
+                            icon: Icons.water_drop,
+                            iconColor: const Color(0xFF1565C0),
+                            title: 'Soil Moisture',
+                            value: 'Dry+',
+                            valueColor: const Color(0xFFB00020),
+                          ),
+                          _statCard(
+                            icon: Icons.wb_sunny_outlined,
+                            iconColor: const Color(0xFFFFD54F),
+                            title: 'Ambient Light',
+                            value: 'Low',
+                            valueColor: const Color(0xFF1E40AF),
+                          ),
+                          _statCard(
+                            icon: Icons.thermostat,
+                            iconColor: const Color(0xFFE53935),
+                            title: 'Soil Temperature',
+                            value: '25 C',
+                            valueColor: const Color(0xFF1565C0),
+                          ),
+                          _statCard(
+                            icon: Icons.battery_6_bar,
+                            iconColor: const Color(0xFF2E7D32),
+                            title: 'Battery Left',
+                            value: '85%',
+                            valueColor: const Color(0xFF2E7D32),
+                          ),
+                        ];
+
+                        return LayoutBuilder(
+                          builder: (context, constraints) {
+                            final mediaQuery = MediaQuery.of(context);
+                            final isPortrait = mediaQuery.orientation == Orientation.portrait;
+                            final width = constraints.maxWidth;
+
+                            // Breakpoints:
+                            // - Very small width: 1 column
+                            // - Portrait phones: 2 columns
+                            // - Landscape/wider screens: 3 columns when wide enough, else 2
+                            int crossAxisCount;
+                            if (width < 340) {
+                              crossAxisCount = 1;
+                            } else if (isPortrait) {
+                              crossAxisCount = 2;
+                            } else {
+                              crossAxisCount = width >= 720 ? 3 : 2;
+                            }
+
+                            const spacing = 12.0;
+                            final totalSpacing = spacing * (crossAxisCount - 1);
+                            final tileWidth = (width - totalSpacing) / crossAxisCount;
+
+                            // Base height ratio with bounds, adjusts nicely per column count
+                            // Slightly tighter aspect; vary bounds per column count
+                            double tileHeight = tileWidth * 0.70;
+                            final minH = crossAxisCount == 1 ? 140.0 : 125.0;
+                            final maxH = crossAxisCount == 3 ? 170.0 : 200.0;
+                            tileHeight = tileHeight.clamp(minH, maxH);
+
+                            return GridView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: tiles.length,
+                              gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: crossAxisCount,
+                                    mainAxisSpacing: spacing,
+                                    crossAxisSpacing: spacing,
+                                    mainAxisExtent: tileHeight,
+                                  ),
+                              itemBuilder: (context, index) => tiles[index],
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    const SizedBox(height: 6),
+                    const Spacer(),
+
+                    // Start button (intrinsic size, centered) with bottom space
+                    Align(
+                      alignment: Alignment.center,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          // TODO: Hook start action
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                        ),
+                        child: const Text(
+                          'Start Drone',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 24,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

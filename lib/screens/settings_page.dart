@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
+import '../widgets/app_header.dart';
+import '../widgets/notifications_sheet.dart';
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({super.key});
@@ -14,97 +16,115 @@ class _SettingsPageState extends State<SettingsPage> {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-        backgroundColor: isDark ? Color(0xFF121212) : Colors.white,
-        foregroundColor: isDark ? Colors.white : Colors.black,
-        automaticallyImplyLeading: false,
-      ),
-      body: ListView(
-        children: [
-          SwitchListTile(
-            title: Text('Notification'),
-            secondary: Icon(Icons.notifications),
-            value: notification,
-            onChanged: (bool value) {
-              setState(() {
-                notification = value;
-              });
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.dark_mode),
-            title: Text('Dark Mode'),
-            onTap: () {
-              setState(() {
-                darkMode = !darkMode;
-              });
-              // You can add actual dark mode toggle logic here if needed
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.star),
-            title: Text('Rate App'),
-            onTap: () {
-              // Add rate app logic
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.share),
-            title: Text('Share App'),
-            onTap: () {
-              // Add share app logic
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.lock),
-            title: Text('Privacy Policy'),
-            onTap: () {
-              // Add privacy policy logic
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.description),
-            title: Text('Terms and Conditions'),
-            onTap: () {
-              // Add terms and conditions logic
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.insert_drive_file),
-            title: Text('Cookies Policy'),
-            onTap: () {
-              // Add cookies policy logic
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.mail),
-            title: Text('Contact'),
-            onTap: () {
-              // Add contact logic
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.feedback),
-            title: Text('Feedback'),
-            onTap: () {
-              // Add feedback logic
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Logout'),
-            onTap: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => const LoginPage()),
-                (route) => false,
-              );
-            },
-          ),
-        ],
+    return ColoredBox(
+      color: const Color(0xFFF2F2F2),
+      child: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // Header (shared) with notifications
+            AppHeader(
+              title: 'Settings',
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.notifications, color: Colors.white),
+                  onPressed: () => showNotificationsSheet(context),
+                ),
+              ],
+            ),
+
+            // Page content
+            Expanded(
+              child: Theme(
+                data: Theme.of(context).copyWith(
+                  listTileTheme: const ListTileThemeData(
+                    titleTextStyle: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF1C1C1C),
+                    ),
+                    subtitleTextStyle: TextStyle(fontSize: 24),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                    visualDensity: VisualDensity.comfortable,
+                  ),
+                  iconTheme: const IconThemeData(size: 22),
+                ),
+                child: ListView(
+                  children: [
+                    SwitchListTile(
+                      title: const Text('Notification'),
+                      secondary: const Icon(Icons.notifications),
+                      value: notification,
+                      onChanged: (bool value) {
+                        setState(() {
+                          notification = value;
+                        });
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.dark_mode),
+                      title: const Text('Dark Mode'),
+                      onTap: () {
+                        setState(() {
+                          darkMode = !darkMode;
+                        });
+                        // You can add actual dark mode toggle logic here if needed
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.share),
+                      title: const Text('Share App'),
+                      onTap: () {
+                        // Add share app logic
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.lock),
+                      title: const Text('Privacy Policy'),
+                      onTap: () {
+                        // Add privacy policy logic
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.description),
+                      title: const Text('Terms and Conditions'),
+                      onTap: () {
+                        // Add terms and conditions logic
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.mail),
+                      title: const Text('Contact'),
+                      onTap: () {
+                        // Add contact logic
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.feedback),
+                      title: const Text('Feedback'),
+                      onTap: () {
+                        // Add feedback logic
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.logout),
+                      title: const Text('Logout'),
+                      onTap: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const LoginPage(),
+                          ),
+                          (route) => false,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

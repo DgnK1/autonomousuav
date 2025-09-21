@@ -1,184 +1,90 @@
 import 'package:flutter/material.dart';
+import '../widgets/app_header.dart';
+import '../widgets/schedule_card.dart';
+import '../widgets/simple_search_delegate.dart';
+import '../widgets/notifications_sheet.dart';
+
+// Default schedule items displayed on the Activity page
+const List<ScheduleItem> _defaultSchedule = [
+  ScheduleItem('09:00 AM', 'System Initialization'),
+  ScheduleItem('09:30 AM', 'Pre-flight Check'),
+  ScheduleItem('09:45 AM', 'Mission Planning'),
+  ScheduleItem('10:00 AM', 'Takeoff Sequence'),
+  ScheduleItem('10:30 AM', 'Navigation Active'),
+];
 
 class ActivityPage extends StatelessWidget {
   const ActivityPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Activity', style: TextStyle(color: Colors.white)),
-        backgroundColor: const Color.fromARGB(255, 0, 0, 0),
-        automaticallyImplyLeading: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+    return ColoredBox(
+      color: const Color(0xFFF2F2F2),
+      child: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const SizedBox(height: 20),
-            Padding(
-              padding: EdgeInsets.symmetric(vertical: 8.0),
-              child: Text(
-                'Drone Footage',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
-              ),
+            // Header (shared)
+            AppHeader(
+              title: 'Activity',
+              actions: [
+                IconButton(
+                  icon: const Icon(Icons.search, color: Colors.white),
+                  onPressed: () async {
+                    final tasks = _defaultSchedule.map((e) => e.task).toList();
+                    final selected = await showSearch<String>(
+                      context: context,
+                      delegate: SimpleSearchDelegate(data: tasks),
+                    );
+                    if (selected != null && selected.isNotEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Selected: $selected')),
+                      );
+                    }
+                  },
+                ),
+                const SizedBox(width: 4),
+                IconButton(
+                  icon: const Icon(Icons.notifications, color: Colors.white),
+                  onPressed: () => showNotificationsSheet(context),
+                ),
+              ],
             ),
-            // Animated GIF under the table
-            Center(
-              child: Image.asset(
-                'assets/gifs/droneflyby.gif',
-                height: 240,
-                fit: BoxFit.contain,
-              ),
-            ),
+
+            // Page content
             Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Header row with only a bottom divider line
-                    Row(
-                      children: const [
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            child: Text(
-                              'Time',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24,
-                              ),
-                            ),
-                          ),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Drone Footage',
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
                         ),
-                        Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(vertical: 8.0),
-                            child: Text(
-                              'Task',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 24,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Divider(height: 1, thickness: 4),
-
-                    // Body table with only vertical separator
-                    DefaultTextStyle.merge(
-                      style: const TextStyle(fontSize: 18),
-                      child: Table(
-                        columnWidths: const {
-                          0: FlexColumnWidth(1),
-                          1: FlexColumnWidth(2),
-                        },
-                        border: const TableBorder(
-                          verticalInside: BorderSide(
-                            color: Color.fromARGB(255, 0, 0, 0),
-                            width: 2,
-                          ),
-                        ),
-                        children: const [
-                          TableRow(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 4.0,
-                                ),
-                                child: Text('09:00 AM'),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 8.0,
-                                ),
-                                child: Text('System Initialization'),
-                              ),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 4.0,
-                                ),
-                                child: Text('09:15 AM'),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 8.0,
-                                ),
-                                child: Text('Pre-flight Check'),
-                              ),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 4.0,
-                                ),
-                                child: Text('09:30 AM'),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 8.0,
-                                ),
-                                child: Text('Mission Planning'),
-                              ),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 4.0,
-                                ),
-                                child: Text('10:00 AM'),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 8.0,
-                                ),
-                                child: Text('Takeoff Sequence'),
-                              ),
-                            ],
-                          ),
-                          TableRow(
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 4.0,
-                                ),
-                                child: Text('10:15 AM'),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 12.0,
-                                  horizontal: 8.0,
-                                ),
-                                child: Text('Navigation Active'),
-                              ),
-                            ],
-                          ),
-                        ],
                       ),
-                    ),
+                      const SizedBox(height: 8),
 
-                    const SizedBox(height: 24),
-                  ],
+                      // Animated GIF (unchanged) inside rounded container
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.asset(
+                          'assets/gifs/droneflyby.gif',
+                          height: 240,
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+
+                      // Schedule card (data-driven)
+                      ScheduleCard(items: _defaultSchedule),
+
+                      const SizedBox(height: 24),
+                    ],
+                  ),
                 ),
               ),
             ),

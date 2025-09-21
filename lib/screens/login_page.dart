@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'main_app.dart';
+import 'signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -201,13 +202,24 @@ class LoginPageState extends State<LoginPage> {
               SizedBox(height: 10),
 
               Center(
-                child: Text(
-                  "Don't have an account? Sign Up",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontFamily: 'Roboto',
-                    fontSize: 14,
-                    color: Color(0xFF87879D),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SignUpPage(),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "Don't have an account? Sign Up",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontFamily: 'Roboto',
+                      fontSize: 14,
+                      color: Color(0xFF87879D),
+                      decoration: TextDecoration.underline,
+                    ),
                   ),
                 ),
               ),
