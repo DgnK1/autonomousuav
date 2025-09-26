@@ -218,7 +218,6 @@ class LoginPageState extends State<LoginPage> {
                       fontFamily: 'Roboto',
                       fontSize: 14,
                       color: Color(0xFF87879D),
-                      decoration: TextDecoration.underline,
                     ),
                   ),
                 ),

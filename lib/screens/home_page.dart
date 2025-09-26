@@ -19,6 +19,9 @@ class _HomePageState extends State<HomePage> {
     required String title,
     required String value,
     required Color valueColor,
+    bool isAverage = false,
+    String averageLabel = 'Average',
+    String? averageTooltip,
   }) {
     return Container(
       decoration: BoxDecoration(
@@ -47,13 +50,40 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
           const SizedBox(height: 8),
+          if (isAverage)
+            Align(
+              alignment: Alignment.center,
+              child: Tooltip(
+                message: averageTooltip ?? 'Average across analyzed plots',
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.06),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    averageLabel.toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.4,
+                      color: Colors.black87,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          if (isAverage) const SizedBox(height: 6),
           Align(
             alignment: Alignment.center,
             child: Text(
               value,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 36,
+                fontSize: 24,
                 fontWeight: FontWeight.w900,
                 color: valueColor,
                 letterSpacing: 0.5,
@@ -132,22 +162,32 @@ class _HomePageState extends State<HomePage> {
                             icon: Icons.water_drop,
                             iconColor: const Color(0xFF1565C0),
                             title: 'Soil Moisture',
-                            value: 'Dry+',
+                            value: 'Dry',
                             valueColor: const Color(0xFFB00020),
+                            isAverage: true,
+                            averageTooltip:
+                                'Average soil moisture across analyzed plots',
                           ),
                           _statCard(
-                            icon: Icons.wb_sunny_outlined,
-                            iconColor: const Color(0xFFFFD54F),
-                            title: 'Ambient Light',
-                            value: 'Low',
-                            valueColor: const Color(0xFF1E40AF),
+                            icon: Icons.science_outlined,
+                            iconColor: const Color(0xFF00897B),
+                            title: 'Soil pH Level',
+                            value: '7',
+                            valueColor: const Color(0xFF2E7D32),
+                            isAverage: true,
+                            averageLabel: 'Neutral',
+                            averageTooltip:
+                                'Average soil pH across analyzed plots',
                           ),
                           _statCard(
                             icon: Icons.thermostat,
                             iconColor: const Color(0xFFE53935),
                             title: 'Soil Temperature',
-                            value: '25 C',
+                            value: '25°C',
                             valueColor: const Color(0xFF1565C0),
+                            isAverage: true,
+                            averageTooltip:
+                                'Average soil temperature across analyzed plots',
                           ),
                           _statCard(
                             icon: Icons.battery_6_bar,
@@ -161,7 +201,8 @@ class _HomePageState extends State<HomePage> {
                         return LayoutBuilder(
                           builder: (context, constraints) {
                             final mediaQuery = MediaQuery.of(context);
-                            final isPortrait = mediaQuery.orientation == Orientation.portrait;
+                            final isPortrait =
+                                mediaQuery.orientation == Orientation.portrait;
                             final width = constraints.maxWidth;
 
                             // Breakpoints:
@@ -179,7 +220,8 @@ class _HomePageState extends State<HomePage> {
 
                             const spacing = 12.0;
                             final totalSpacing = spacing * (crossAxisCount - 1);
-                            final tileWidth = (width - totalSpacing) / crossAxisCount;
+                            final tileWidth =
+                                (width - totalSpacing) / crossAxisCount;
 
                             // Base height ratio with bounds, adjusts nicely per column count
                             // Slightly tighter aspect; vary bounds per column count
@@ -204,6 +246,28 @@ class _HomePageState extends State<HomePage> {
                           },
                         );
                       },
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: const [
+                        Icon(
+                          Icons.info_outline,
+                          size: 16,
+                          color: Colors.black54,
+                        ),
+                        SizedBox(width: 6),
+                        Flexible(
+                          child: Text(
+                            'Values shown are averages across analyzed plots.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.black54,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 6),
                     const Spacer(),
