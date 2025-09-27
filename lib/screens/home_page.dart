@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../widgets/app_header.dart';
 import '../widgets/notifications_sheet.dart';
+import '../screens/soil_moisture_page.dart';
+import '../screens/soil_temp_page.dart';
+import '../screens/soil_phlevel_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -22,75 +25,80 @@ class _HomePageState extends State<HomePage> {
     bool isAverage = false,
     String averageLabel = 'Average',
     String? averageTooltip,
+    VoidCallback? onTap,
   }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black12),
-      ),
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Icon(icon, color: iconColor, size: 24),
-              const SizedBox(width: 8),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                  color: Colors.black87,
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFFF5F5F5),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.black12),
+        ),
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(icon, color: iconColor, size: 24),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 12,
+                    color: Colors.black87,
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          if (isAverage)
-            Align(
-              alignment: Alignment.center,
-              child: Tooltip(
-                message: averageTooltip ?? 'Average across analyzed plots',
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 6,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.06),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Text(
-                    averageLabel.toUpperCase(),
-                    style: const TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      letterSpacing: 0.4,
-                      color: Colors.black87,
+              ],
+            ),
+            const SizedBox(height: 8),
+            if (isAverage)
+              Align(
+                alignment: Alignment.center,
+                child: Tooltip(
+                  message: averageTooltip ?? 'Average across analyzed plots',
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.06),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      averageLabel.toUpperCase(),
+                      style: const TextStyle(
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        letterSpacing: 0.4,
+                        color: Colors.black87,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          if (isAverage) const SizedBox(height: 6),
-          Align(
-            alignment: Alignment.center,
-            child: Text(
-              value,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w900,
-                color: valueColor,
-                letterSpacing: 0.5,
+            if (isAverage) const SizedBox(height: 6),
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                value,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w900,
+                  color: valueColor,
+                  letterSpacing: 0.5,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -167,6 +175,15 @@ class _HomePageState extends State<HomePage> {
                             isAverage: true,
                             averageTooltip:
                                 'Average soil moisture across analyzed plots',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SoilMoisturePage(),
+                                ),
+                              );
+                            },
                           ),
                           _statCard(
                             icon: Icons.science_outlined,
@@ -178,6 +195,14 @@ class _HomePageState extends State<HomePage> {
                             averageLabel: 'Neutral',
                             averageTooltip:
                                 'Average soil pH across analyzed plots',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SoilPHLevelPage(),
+                                ),
+                              );
+                            },
                           ),
                           _statCard(
                             icon: Icons.thermostat,
@@ -188,6 +213,15 @@ class _HomePageState extends State<HomePage> {
                             isAverage: true,
                             averageTooltip:
                                 'Average soil temperature across analyzed plots',
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      const SoilTemperaturePage(),
+                                ),
+                              );
+                            },
                           ),
                           _statCard(
                             icon: Icons.battery_6_bar,
