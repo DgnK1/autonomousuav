@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../widgets/app_header.dart';
 import '../widgets/notifications_sheet.dart';
-import '../screens/soil_moisture_page.dart';
-import '../screens/soil_temp_page.dart';
-import '../screens/soil_phlevel_page.dart';
+import '../screens/soil_monitoring_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -175,15 +173,6 @@ class _HomePageState extends State<HomePage> {
                             isAverage: true,
                             averageTooltip:
                                 'Average soil moisture across analyzed plots',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SoilMoisturePage(),
-                                ),
-                              );
-                            },
                           ),
                           _statCard(
                             icon: Icons.science_outlined,
@@ -195,14 +184,6 @@ class _HomePageState extends State<HomePage> {
                             averageLabel: 'Neutral',
                             averageTooltip:
                                 'Average soil pH across analyzed plots',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const SoilPHLevelPage(),
-                                ),
-                              );
-                            },
                           ),
                           _statCard(
                             icon: Icons.thermostat,
@@ -213,15 +194,6 @@ class _HomePageState extends State<HomePage> {
                             isAverage: true,
                             averageTooltip:
                                 'Average soil temperature across analyzed plots',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      const SoilTemperaturePage(),
-                                ),
-                              );
-                            },
                           ),
                           _statCard(
                             icon: Icons.battery_6_bar,
@@ -307,31 +279,63 @@ class _HomePageState extends State<HomePage> {
                     const Spacer(),
 
                     // Start button (intrinsic size, centered) with bottom space
-                    Align(
-                      alignment: Alignment.center,
-                      child: ElevatedButton(
-                        onPressed: () {
-                          // TODO: Hook start action
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    const SoilMonitoringPage(),
+                              ),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
                           ),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 12,
+                          child: const Text(
+                            'Summary',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 15,
+                            ),
                           ),
                         ),
-                        child: const Text(
-                          'Start Drone',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 24,
+                        const SizedBox(width: 16),
+                        ElevatedButton(
+                          onPressed: () {
+                            // TODO: Hook start action
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.black,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
+                          ),
+                          child: const Text(
+                            'Start Drone',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 24,
+                            ),
                           ),
                         ),
-                      ),
+                      ],
                     ),
                     const SizedBox(height: 12),
                   ],
