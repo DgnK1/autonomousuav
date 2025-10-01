@@ -86,7 +86,7 @@ class _SoilMonitoringPageState extends State<SoilMonitoringPage> {
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal, // allow sideways scroll
                 child: DataTable(
-                  headingRowColor: MaterialStateProperty.all(
+                  headingRowColor: WidgetStateProperty.all(
                     Colors.grey.shade200,
                   ),
                   columns: const [
@@ -105,7 +105,7 @@ class _SoilMonitoringPageState extends State<SoilMonitoringPage> {
                     final isSelected = _selectedPlotId == id;
 
                     return DataRow(
-                      color: MaterialStateProperty.all(
+                      color: WidgetStateProperty.all(
                         isSelected ? Colors.blue.shade100 : null,
                       ),
                       cells: [

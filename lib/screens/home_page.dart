@@ -13,6 +13,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isDark = false;
+  // Controller for swiping between Map and Drone Footage
+  final PageController _topPagerController = PageController();
+  int _topPagerIndex = 0;
 
   Widget _statCard({
     required IconData icon,
@@ -24,6 +27,8 @@ class _HomePageState extends State<HomePage> {
     String averageLabel = 'Average',
     String? averageTooltip,
     VoidCallback? onTap,
+    double? titleFontSize,
+    double? valueFontSize,
   }) {
     return InkWell(
       onTap: onTap,
@@ -46,9 +51,9 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(width: 8),
                 Text(
                   title,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: 12,
+                    fontSize: titleFontSize ?? 16,
                     color: Colors.black87,
                   ),
                 ),
@@ -72,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                     child: Text(
                       averageLabel.toUpperCase(),
                       style: const TextStyle(
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.4,
                         color: Colors.black87,
@@ -88,7 +93,7 @@ class _HomePageState extends State<HomePage> {
                 value,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 24,
+                  fontSize: valueFontSize ?? 24,
                   fontWeight: FontWeight.w900,
                   color: valueColor,
                   letterSpacing: 0.5,
@@ -99,6 +104,12 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _topPagerController.dispose();
+    super.dispose();
   }
 
   @override
@@ -127,34 +138,88 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    // Map (kept intact)
+                    // Swipeable top area: Google Map <-> Drone Footage
                     ClipRRect(
                       borderRadius: BorderRadius.circular(12),
                       child: SizedBox(
                         height: 250,
-                        child: GoogleMap(
-                          initialCameraPosition: const CameraPosition(
-                            target: LatLng(
-                              10.503055391390058,
-                              124.02984872550603,
+                        child: Stack(
+                          children: [
+                            PageView(
+                              controller: _topPagerController,
+                              onPageChanged: (i) =>
+                                  setState(() => _topPagerIndex = i),
+                              children: [
+                                // Google Map page
+                                GoogleMap(
+                                  initialCameraPosition: const CameraPosition(
+                                    target: LatLng(
+                                      10.503055391390058,
+                                      124.02984872550603,
+                                    ),
+                                    zoom: 16.0,
+                                  ),
+                                  markers: {
+                                    const Marker(
+                                      markerId: MarkerId('targetLocation'),
+                                      position: LatLng(
+                                        10.503055391390058,
+                                        124.02984872550603,
+                                      ),
+                                      infoWindow: InfoWindow(
+                                        title:
+                                            'Cebu Technological University - Danao Campus',
+                                        snippet:
+                                            'Cebu Technological University - Danao Campus',
+                                      ),
+                                    ),
+                                  },
+                                ),
+                                // Drone footage page (GIF placeholder)
+                                Container(
+                                  color: Colors.black,
+                                  alignment: Alignment.center,
+                                  child: Image.asset(
+                                    'assets/gifs/droneflyby.gif',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              ],
                             ),
-                            zoom: 16.0,
-                          ),
-                          markers: {
-                            const Marker(
-                              markerId: MarkerId('targetLocation'),
-                              position: LatLng(
-                                10.503055391390058,
-                                124.02984872550603,
-                              ),
-                              infoWindow: InfoWindow(
-                                title:
-                                    'Cebu Technological University - Danao Campus',
-                                snippet:
-                                    'Cebu Technological University - Danao Campus',
+                            // Page indicator
+                            Positioned(
+                              right: 8,
+                              bottom: 8,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.4),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  children: List.generate(2, (index) {
+                                    final isActive = _topPagerIndex == index;
+                                    return Container(
+                                      width: isActive ? 10 : 8,
+                                      height: isActive ? 10 : 8,
+                                      margin: const EdgeInsets.symmetric(
+                                        horizontal: 3,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isActive
+                                            ? Colors.white
+                                            : Colors.white70,
+                                        shape: BoxShape.circle,
+                                      ),
+                                    );
+                                  }),
+                                ),
                               ),
                             ),
-                          },
+                          ],
                         ),
                       ),
                     ),
@@ -194,6 +259,7 @@ class _HomePageState extends State<HomePage> {
                             isAverage: true,
                             averageTooltip:
                                 'Average soil temperature across analyzed plots',
+                            titleFontSize: 14,
                           ),
                           _statCard(
                             icon: Icons.battery_6_bar,
@@ -201,6 +267,7 @@ class _HomePageState extends State<HomePage> {
                             title: 'Battery Left',
                             value: '85%',
                             valueColor: const Color(0xFF2E7D32),
+                            valueFontSize: 42,
                           ),
                         ];
 
@@ -279,7 +346,7 @@ class _HomePageState extends State<HomePage> {
                     const Spacer(),
 
                     // Start button (intrinsic size, centered) with bottom space
-                    Column(
+                    Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         ElevatedButton(
@@ -307,7 +374,7 @@ class _HomePageState extends State<HomePage> {
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
-                              fontSize: 15,
+                              fontSize: 24,
                             ),
                           ),
                         ),
