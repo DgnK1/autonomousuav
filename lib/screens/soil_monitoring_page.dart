@@ -42,6 +42,9 @@ class _SoilMonitoringPageState extends State<SoilMonitoringPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
+    final isDark = theme.brightness == Brightness.dark;
     final markers = _plots.map((plot) {
       final id = plot['id'].toString();
       final title = plot['title'].toString();
@@ -87,13 +90,18 @@ class _SoilMonitoringPageState extends State<SoilMonitoringPage> {
                 scrollDirection: Axis.horizontal, // allow sideways scroll
                 child: DataTable(
                   headingRowColor: WidgetStateProperty.all(
-                    Colors.grey.shade200,
+                    isDark ? Colors.white12 : Colors.grey.shade200,
                   ),
-                  columns: const [
-                    DataColumn(label: Text('Plot')),
-                    DataColumn(label: Text('Moisture')),
-                    DataColumn(label: Text('pH')),
-                    DataColumn(label: Text('Temp')),
+                  headingTextStyle: TextStyle(
+                    color: scheme.onSurface,
+                    fontWeight: FontWeight.w600,
+                  ),
+                  dataTextStyle: TextStyle(color: scheme.onSurface),
+                  columns: [
+                    DataColumn(label: Text('Plot', style: TextStyle(color: scheme.onSurface))),
+                    DataColumn(label: Text('Moisture', style: TextStyle(color: scheme.onSurface))),
+                    DataColumn(label: Text('pH', style: TextStyle(color: scheme.onSurface))),
+                    DataColumn(label: Text('Temp', style: TextStyle(color: scheme.onSurface))),
                   ],
                   rows: _plots.map((plot) {
                     final id = plot['id'].toString();
@@ -106,13 +114,17 @@ class _SoilMonitoringPageState extends State<SoilMonitoringPage> {
 
                     return DataRow(
                       color: WidgetStateProperty.all(
-                        isSelected ? Colors.blue.shade100 : null,
+                        isSelected
+                            ? (isDark
+                                ? Colors.blue.withOpacity(0.2)
+                                : Colors.blue.shade100)
+                            : null,
                       ),
                       cells: [
-                        DataCell(Text(title), onTap: () => _goToPlot(plot)),
-                        DataCell(Text(moisture), onTap: () => _goToPlot(plot)),
-                        DataCell(Text(ph), onTap: () => _goToPlot(plot)),
-                        DataCell(Text(temp), onTap: () => _goToPlot(plot)),
+                        DataCell(Text(title, style: TextStyle(color: scheme.onSurface)), onTap: () => _goToPlot(plot)),
+                        DataCell(Text(moisture, style: TextStyle(color: scheme.onSurface)), onTap: () => _goToPlot(plot)),
+                        DataCell(Text(ph, style: TextStyle(color: scheme.onSurface)), onTap: () => _goToPlot(plot)),
+                        DataCell(Text(temp, style: TextStyle(color: scheme.onSurface)), onTap: () => _goToPlot(plot)),
                       ],
                     );
                   }).toList(),

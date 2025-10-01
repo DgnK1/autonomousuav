@@ -5,7 +5,7 @@ Future<void> showNotificationsSheet(BuildContext context) async {
     context: context,
     useSafeArea: true,
     isScrollControlled: true,
-    backgroundColor: Colors.white,
+    backgroundColor: Theme.of(context).cardColor,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
     ),
@@ -31,6 +31,8 @@ class _NotificationsSheetState extends State<_NotificationsSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return SafeArea(
       top: false,
       child: Column(
@@ -41,27 +43,31 @@ class _NotificationsSheetState extends State<_NotificationsSheet> {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
             child: Row(
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
                     'Notifications',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: scheme.onSurface,
+                    ),
                   ),
                 ),
                 TextButton.icon(
                   onPressed: _notifications.isEmpty
                       ? null
                       : () => setState(_notifications.clear),
-                  icon: const Icon(Icons.mark_email_read),
-                  label: const Text('Mark all as read'),
+                  icon: Icon(Icons.mark_email_read, color: scheme.onSurface),
+                  label: Text('Mark all as read', style: TextStyle(color: scheme.onSurface)),
                 ),
                 IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: Icon(Icons.close, color: scheme.onSurface),
                   onPressed: () => Navigator.of(context).pop(),
                 ),
               ],
             ),
           ),
-          const Divider(height: 1),
+          Divider(height: 1, color: theme.dividerColor),
           Flexible(
             child: _notifications.isEmpty
                 ? const _EmptyNotifications()
@@ -82,13 +88,13 @@ class _NotificationsSheetState extends State<_NotificationsSheet> {
                           _notifications.removeAt(index);
                         }),
                         child: ListTile(
-                          leading: const Icon(Icons.notifications),
-                          title: Text(n.title),
-                          subtitle: Text(n.time),
+                          leading: Icon(Icons.notifications, color: scheme.onSurface),
+                          title: Text(n.title, style: TextStyle(color: scheme.onSurface)),
+                          subtitle: Text(n.time, style: TextStyle(color: scheme.onSurface.withOpacity(0.7))),
                         ),
                       );
                     },
-                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    separatorBuilder: (_, __) => Divider(height: 1, color: theme.dividerColor),
                     itemCount: _notifications.length,
                   ),
           ),
@@ -103,15 +109,16 @@ class _EmptyNotifications extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.mark_email_read, size: 48, color: Colors.green),
-            SizedBox(height: 12),
-            Text('All caught up!', style: TextStyle(fontSize: 16)),
+          children: [
+            const Icon(Icons.mark_email_read, size: 48, color: Colors.green),
+            const SizedBox(height: 12),
+            Text('All caught up!', style: TextStyle(fontSize: 16, color: scheme.onSurface)),
           ],
         ),
       ),

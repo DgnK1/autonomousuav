@@ -22,6 +22,8 @@ class LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return Scaffold(
       body: Center(
         child: Padding(
@@ -36,7 +38,7 @@ class LoginPageState extends State<LoginPage> {
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.bold,
                   fontSize: 32,
-                  color: Color(0xFF1C1C1C),
+                  color: theme.textTheme.headlineSmall?.color,
                 ),
               ),
               SizedBox(height: 64),
@@ -47,7 +49,7 @@ class LoginPageState extends State<LoginPage> {
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.bold,
                   fontSize: 26,
-                  color: Color(0xFF1C1C1C),
+                  color: theme.textTheme.titleLarge?.color,
                 ),
               ),
               SizedBox(height: 6),
@@ -58,7 +60,7 @@ class LoginPageState extends State<LoginPage> {
                   fontFamily: 'Roboto',
                   fontWeight: FontWeight.normal,
                   fontSize: 18,
-                  color: Color(0xFF1C1C1C),
+                  color: theme.textTheme.bodyMedium?.color,
                 ),
               ),
               SizedBox(height: 26),
@@ -94,7 +96,8 @@ class LoginPageState extends State<LoginPage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(255, 0, 0, 0),
+                    backgroundColor: scheme.primary,
+                    foregroundColor: scheme.onPrimary,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -102,7 +105,6 @@ class LoginPageState extends State<LoginPage> {
                   child: Text(
                     'Continue',
                     style: TextStyle(
-                      color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
@@ -112,7 +114,7 @@ class LoginPageState extends State<LoginPage> {
               SizedBox(height: 26),
               Row(
                 children: [
-                  Expanded(child: Divider(color: Colors.grey, thickness: 1)),
+                  Expanded(child: Divider(color: theme.dividerColor, thickness: 1)),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
                     child: Text(
@@ -120,11 +122,11 @@ class LoginPageState extends State<LoginPage> {
                       style: TextStyle(
                         fontFamily: 'Roboto',
                         fontSize: 14,
-                        color: Color(0xFF87879D),
+                        color: scheme.onSurfaceVariant,
                       ),
                     ),
                   ),
-                  Expanded(child: Divider(color: Colors.grey, thickness: 1)),
+                  Expanded(child: Divider(color: theme.dividerColor, thickness: 1)),
                 ],
               ),
               SizedBox(height: 26),
@@ -140,20 +142,17 @@ class LoginPageState extends State<LoginPage> {
                       MaterialPageRoute(builder: (context) => MainApp()),
                     );
                   },
-                  icon: Icon(
-                    Icons.g_mobiledata,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                  ),
+                  icon: Icon(Icons.g_mobiledata, color: scheme.onSurface),
                   label: Text(
                     'Continue with Google',
                     style: TextStyle(
-                      color: const Color.fromARGB(255, 0, 0, 0),
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromARGB(239, 239, 239, 239),
+                    backgroundColor: scheme.surfaceVariant,
+                    foregroundColor: scheme.onSurface,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -169,21 +168,17 @@ class LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     // Handle Apple login
                   },
-                  icon: Icon(
-                    Icons.apple,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                    size: 24,
-                  ),
+                  icon: Icon(Icons.apple, color: scheme.onSurface, size: 24),
                   label: Text(
                     'Continue with Apple',
                     style: TextStyle(
-                      color: const Color.fromARGB(255, 0, 0, 0),
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB(239, 239, 239, 239),
+                    backgroundColor: scheme.surfaceVariant,
+                    foregroundColor: scheme.onSurface,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -196,7 +191,7 @@ class LoginPageState extends State<LoginPage> {
                 child: Text(
                   'Forgot Password?',
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 14, color: Color(0xFF87879D)),
+                  style: TextStyle(fontSize: 14, color: scheme.onSurfaceVariant),
                 ),
               ),
               SizedBox(height: 10),
@@ -217,7 +212,7 @@ class LoginPageState extends State<LoginPage> {
                     style: TextStyle(
                       fontFamily: 'Roboto',
                       fontSize: 14,
-                      color: Color(0xFF87879D),
+                      color: scheme.onSurfaceVariant,
                     ),
                   ),
                 ),

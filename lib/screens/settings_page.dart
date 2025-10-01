@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
+import '../theme_controller.dart';
 import '../widgets/app_header.dart';
 import '../widgets/notifications_sheet.dart';
 
@@ -12,12 +13,13 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool notification = false;
-  bool darkMode = false;
+  bool darkMode = AppTheme.themeMode.value == ThemeMode.dark;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return ColoredBox(
-      color: const Color(0xFFF2F2F2),
+      color: theme.scaffoldBackgroundColor,
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -36,15 +38,15 @@ class _SettingsPageState extends State<SettingsPage> {
             // Page content
             Expanded(
               child: Theme(
-                data: Theme.of(context).copyWith(
-                  listTileTheme: const ListTileThemeData(
+                data: theme.copyWith(
+                  listTileTheme: ListTileThemeData(
                     titleTextStyle: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.w500,
-                      color: Color(0xFF1C1C1C),
+                      color: theme.colorScheme.onSurface,
                     ),
-                    subtitleTextStyle: TextStyle(fontSize: 24),
-                    contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                    subtitleTextStyle: const TextStyle(fontSize: 24),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                     visualDensity: VisualDensity.comfortable,
                   ),
                   iconTheme: const IconThemeData(size: 22),
@@ -61,14 +63,15 @@ class _SettingsPageState extends State<SettingsPage> {
                         });
                       },
                     ),
-                    ListTile(
-                      leading: const Icon(Icons.dark_mode),
+                    SwitchListTile(
                       title: const Text('Dark Mode'),
-                      onTap: () {
+                      secondary: const Icon(Icons.dark_mode),
+                      value: darkMode,
+                      onChanged: (bool value) {
                         setState(() {
-                          darkMode = !darkMode;
+                          darkMode = value;
                         });
-                        // You can add actual dark mode toggle logic here if needed
+                        AppTheme.set(value ? ThemeMode.dark : ThemeMode.light);
                       },
                     ),
                     ListTile(

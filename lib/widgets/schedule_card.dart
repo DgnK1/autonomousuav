@@ -14,42 +14,64 @@ class ScheduleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final scheme = theme.colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: theme.cardColor, // dark: #3B3B3B, light: default
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.black12),
+        border: Border.all(color: theme.dividerColor),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       child: Column(
         children: [
           Row(
-            children: const [
+            children: [
               Expanded(
                 flex: 3,
                 child: Text(
                   'Time',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: scheme.onSurface,
+                  ),
                 ),
               ),
               Expanded(
                 flex: 7,
                 child: Text(
                   'Task',
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 16,
+                    color: scheme.onSurface,
+                  ),
                 ),
               ),
             ],
           ),
           const SizedBox(height: 8),
-          const Divider(height: 1),
+          Divider(height: 1, color: theme.dividerColor),
           const SizedBox(height: 8),
           ...items.map((e) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10.0),
                 child: Row(
                   children: [
-                    Expanded(flex: 3, child: Text(e.time)),
-                    Expanded(flex: 7, child: Text(e.task)),
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        e.time,
+                        style: TextStyle(color: scheme.onSurface),
+                      ),
+                    ),
+                    Expanded(
+                      flex: 7,
+                      child: Text(
+                        e.task,
+                        style: TextStyle(color: scheme.onSurface),
+                      ),
+                    ),
                   ],
                 ),
               )),

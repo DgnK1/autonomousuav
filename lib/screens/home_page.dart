@@ -18,6 +18,7 @@ class _HomePageState extends State<HomePage> {
   int _topPagerIndex = 0;
 
   Widget _statCard({
+    required BuildContext ctx,
     required IconData icon,
     required Color iconColor,
     required String title,
@@ -30,14 +31,15 @@ class _HomePageState extends State<HomePage> {
     double? titleFontSize,
     double? valueFontSize,
   }) {
+    final isDarkMode = Theme.of(ctx).brightness == Brightness.dark;
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(12),
       child: Container(
         decoration: BoxDecoration(
-          color: const Color(0xFFF5F5F5),
+          color: isDarkMode ? const Color(0xFF3B3B3B) : const Color(0xFFF5F5F5),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.black12),
+          border: Border.all(color: isDarkMode ? Colors.white24 : Colors.black12),
         ),
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -53,8 +55,8 @@ class _HomePageState extends State<HomePage> {
                   title,
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
-                    fontSize: titleFontSize ?? 16,
-                    color: Colors.black87,
+                    fontSize: titleFontSize ?? 12,
+                    color: isDarkMode ? Colors.white : Colors.black87,
                   ),
                 ),
               ],
@@ -71,16 +73,18 @@ class _HomePageState extends State<HomePage> {
                       vertical: 2,
                     ),
                     decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.06),
+                      color: isDarkMode
+                          ? Colors.white24
+                          : Colors.black.withOpacity(0.06),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       averageLabel.toUpperCase(),
-                      style: const TextStyle(
-                        fontSize: 12,
+                      style: TextStyle(
+                        fontSize: 11,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.4,
-                        color: Colors.black87,
+                        color: isDarkMode ? Colors.white : Colors.black87,
                       ),
                     ),
                   ),
@@ -114,8 +118,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDarkTheme = theme.brightness == Brightness.dark;
     return ColoredBox(
-      color: const Color(0xFFF2F2F2),
+      color: theme.scaffoldBackgroundColor,
       child: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -228,45 +234,50 @@ class _HomePageState extends State<HomePage> {
                     // Stats grid (responsive tile height)
                     Builder(
                       builder: (context) {
+                        final isDark = Theme.of(context).brightness == Brightness.dark;
                         final tiles = <Widget>[
                           _statCard(
+                            ctx: context,
                             icon: Icons.water_drop,
                             iconColor: const Color(0xFF1565C0),
                             title: 'Soil Moisture',
                             value: 'Dry',
-                            valueColor: const Color(0xFFB00020),
+                            valueColor: isDark ? Colors.white : const Color(0xFFB00020),
                             isAverage: true,
                             averageTooltip:
                                 'Average soil moisture across analyzed plots',
                           ),
                           _statCard(
+                            ctx: context,
                             icon: Icons.science_outlined,
                             iconColor: const Color(0xFF00897B),
                             title: 'Soil pH Level',
                             value: '7',
-                            valueColor: const Color(0xFF2E7D32),
+                            valueColor: isDark ? Colors.white : const Color(0xFF2E7D32),
                             isAverage: true,
                             averageLabel: 'Neutral',
                             averageTooltip:
                                 'Average soil pH across analyzed plots',
                           ),
                           _statCard(
+                            ctx: context,
                             icon: Icons.thermostat,
                             iconColor: const Color(0xFFE53935),
                             title: 'Soil Temperature',
                             value: '25°C',
-                            valueColor: const Color(0xFF1565C0),
+                            valueColor: isDark ? Colors.white : const Color(0xFF1565C0),
                             isAverage: true,
                             averageTooltip:
                                 'Average soil temperature across analyzed plots',
                             titleFontSize: 14,
                           ),
                           _statCard(
+                            ctx: context,
                             icon: Icons.battery_6_bar,
                             iconColor: const Color(0xFF2E7D32),
                             title: 'Battery Left',
                             value: '85%',
-                            valueColor: const Color(0xFF2E7D32),
+                            valueColor: isDark ? Colors.white : const Color(0xFF2E7D32),
                             valueFontSize: 42,
                           ),
                         ];
@@ -323,20 +334,21 @@ class _HomePageState extends State<HomePage> {
                     const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Icon(
                           Icons.info_outline,
                           size: 16,
-                          color: Colors.black54,
+                          color: isDarkTheme ? Colors.white70 : Colors.black54,
                         ),
-                        SizedBox(width: 6),
+                        const SizedBox(width: 6),
                         Flexible(
                           child: Text(
                             'Values shown are averages across analyzed plots.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 12,
-                              color: Colors.black54,
+                              color:
+                                  isDarkTheme ? Colors.white70 : Colors.black54,
                             ),
                           ),
                         ),
@@ -360,7 +372,8 @@ class _HomePageState extends State<HomePage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blue,
+                            backgroundColor:
+                                isDarkTheme ? const Color(0xFF3B3B3B) : Colors.blue,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -384,7 +397,8 @@ class _HomePageState extends State<HomePage> {
                             // TODO: Hook start action
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.black,
+                            backgroundColor:
+                                isDarkTheme ? const Color(0xFF3B3B3B) : Colors.black,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
