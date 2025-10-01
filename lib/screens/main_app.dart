@@ -13,6 +13,7 @@ class MainApp extends StatefulWidget {
 
 class _MainApp extends State<MainApp> {
   int _currentIndex = 0;
+  late final PageController _pageController;
 
   final List<Widget> _pages = [
     const HomePage(), // Home Page
@@ -22,17 +23,37 @@ class _MainApp extends State<MainApp> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: _currentIndex);
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
-      body: _pages[_currentIndex], // Display the selected page
+      // Swipe between tabs
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (index) => setState(() => _currentIndex = index),
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
         onTap: (int index) {
-          setState(() {
-            _currentIndex = index;
-          });
+          setState(() => _currentIndex = index);
+          _pageController.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+          );
         },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'HOME'),
