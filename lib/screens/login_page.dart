@@ -10,12 +10,12 @@ class LoginPage extends StatefulWidget {
 }
 
 class LoginPageState extends State<LoginPage> {
-  final _usernameController = TextEditingController();
+  final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
   @override
   void dispose() {
-    _usernameController.dispose();
+    _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -66,16 +66,16 @@ class LoginPageState extends State<LoginPage> {
               SizedBox(height: 26),
 
               TextField(
-                controller: _usernameController,
+                controller: _emailController,
                 decoration: InputDecoration(
-                  labelText: 'Username',
+                  labelText: 'Email',
                   hintText: 'email@domain.com',
                   border: OutlineInputBorder(),
                 ),
               ),
               SizedBox(height: 16),
 
-              /*TextField(
+              TextField(
                 controller: _passwordController,
                 decoration: InputDecoration(
                   labelText: 'Password',
@@ -83,7 +83,7 @@ class LoginPageState extends State<LoginPage> {
                 ),
                 obscureText: true,
               ),
-              SizedBox(height: 26),*/
+              SizedBox(height: 26),
               SizedBox(
                 width: double.infinity,
                 height: 49,
