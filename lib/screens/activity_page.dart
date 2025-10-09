@@ -29,7 +29,7 @@ class ActivityPage extends StatelessWidget {
               title: 'Activity',
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.search, color: Colors.white),
+                  icon: const Icon(Icons.search),
                   onPressed: () async {
                     final tasks = _defaultSchedule.map((e) => e.task).toList();
                     final selected = await showSearch<String>(
@@ -45,7 +45,7 @@ class ActivityPage extends StatelessWidget {
                 ),
                 const SizedBox(width: 4),
                 IconButton(
-                  icon: const Icon(Icons.notifications, color: Colors.white),
+                  icon: const Icon(Icons.notifications),
                   onPressed: () => showNotificationsSheet(context),
                 ),
               ],

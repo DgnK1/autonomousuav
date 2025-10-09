@@ -131,7 +131,7 @@ class _HomePageState extends State<HomePage> {
               title: 'Dashboard',
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.notifications, color: Colors.white),
+                  icon: const Icon(Icons.notifications),
                   onPressed: () => showNotificationsSheet(context),
                 ),
               ],

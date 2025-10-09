@@ -24,21 +24,21 @@ class _ManualControlsPageState extends State<ManualControlsPage> {
               title: 'Manual Controls',
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.notifications, color: Colors.white),
+                  icon: const Icon(Icons.notifications),
                   onPressed: () => showNotificationsSheet(context),
                 ),
               ],
             ),
 
             // Under Maintenance placeholder
-            const Expanded(
+            Expanded(
               child: Center(
                 child: Text(
                   'Under Maintenance',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: Colors.white,
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
               ),

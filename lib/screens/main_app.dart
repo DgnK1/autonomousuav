@@ -36,6 +36,7 @@ class _MainApp extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
+    final isLight = Theme.of(context).brightness == Brightness.light;
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
       // Swipe between tabs
@@ -44,29 +45,45 @@ class _MainApp extends State<MainApp> {
         onPageChanged: (index) => setState(() => _currentIndex = index),
         children: _pages,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: _currentIndex,
-        onTap: (int index) {
-          setState(() => _currentIndex = index);
-          _pageController.animateToPage(
-            index,
-            duration: const Duration(milliseconds: 250),
-            curve: Curves.easeInOut,
-          );
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'HOME'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.show_chart_rounded),
-            label: 'ACTIVITY',
-          ),
-          BottomNavigationBarItem(icon: Icon(Icons.gamepad), label: 'MANUAL'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
-            label: 'SETTINGS',
-          ),
-        ],
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: isLight ? Colors.white : null,
+          boxShadow: const [
+            BoxShadow(
+              color: Color(0x33000000),
+              blurRadius: 6,
+              spreadRadius: 0,
+              offset: Offset(0, -1), // slight glow above bar
+            ),
+          ],
+        ),
+        child: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          backgroundColor: isLight ? Colors.white : null,
+          selectedItemColor: isLight ? Colors.black : null,
+          unselectedItemColor: isLight ? Colors.black54 : null,
+          currentIndex: _currentIndex,
+          onTap: (int index) {
+            setState(() => _currentIndex = index);
+            _pageController.animateToPage(
+              index,
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+            );
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'HOME'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.show_chart_rounded),
+              label: 'ACTIVITY',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.gamepad), label: 'MANUAL'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: 'SETTINGS',
+            ),
+          ],
+        ),
       ),
     );
   }

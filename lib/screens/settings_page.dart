@@ -29,7 +29,7 @@ class _SettingsPageState extends State<SettingsPage> {
               title: 'Settings',
               actions: [
                 IconButton(
-                  icon: const Icon(Icons.notifications, color: Colors.white),
+                  icon: const Icon(Icons.notifications),
                   onPressed: () => showNotificationsSheet(context),
                 ),
               ],
