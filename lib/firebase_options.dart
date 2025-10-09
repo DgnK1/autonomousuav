@@ -24,10 +24,6 @@ class DefaultFirebaseOptions {
         return android;
       case TargetPlatform.iOS:
         return ios;
-      case TargetPlatform.macOS:
-        return macos;
-      case TargetPlatform.windows:
-        return windows;
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -66,26 +62,6 @@ class DefaultFirebaseOptions {
     storageBucket: 'autonomous-uav-c01d6.firebasestorage.app',
     iosClientId: '100494437835-7ln0uf3tch2o521kv6q4mncsssfr3rfg.apps.googleusercontent.com',
     iosBundleId: 'com.example.autonomousuav',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyARTsvTj8Ijb697WRPWIiebl8c8KZg5GWI',
-    appId: '1:100494437835:ios:8b0c5c7b490498a4f75a4e',
-    messagingSenderId: '100494437835',
-    projectId: 'autonomous-uav-c01d6',
-    storageBucket: 'autonomous-uav-c01d6.firebasestorage.app',
-    iosClientId: '100494437835-7ln0uf3tch2o521kv6q4mncsssfr3rfg.apps.googleusercontent.com',
-    iosBundleId: 'com.example.autonomousuav',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyBSJqIvTse55JBrJS0ghS9kj2CRPOvdOAo',
-    appId: '1:100494437835:web:f983145a74e4d135f75a4e',
-    messagingSenderId: '100494437835',
-    projectId: 'autonomous-uav-c01d6',
-    authDomain: 'autonomous-uav-c01d6.firebaseapp.com',
-    storageBucket: 'autonomous-uav-c01d6.firebasestorage.app',
-    measurementId: 'G-6K3WYV7R95',
   );
 
 }
