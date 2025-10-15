@@ -1,6 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../auth_service.dart';
 import 'login_page.dart';
-
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -10,46 +11,55 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
-
   bool _isLoading = false;
 
   @override
   void dispose() {
-    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
     super.dispose();
   }
 
-  Future<void> _handleSignUp() async {
-    if (!_formKey.currentState!.validate()) return;
+  Future<void> _signUp() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text.trim();
+    final confirmPassword = _confirmPasswordController.text.trim();
+
+    if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please fill in all fields.')),
+      );
+      return;
+    }
+
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Passwords do not match.')),
+      );
+      return;
+    }
+
     setState(() => _isLoading = true);
-
     try {
-      // Replace with Firebase createAccount
-      await Future.delayed(const Duration(seconds: 1));
-
-      if (!mounted) return;
+      await authService.value.createAccount(email: email, password: password);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Account created successfully!')),
       );
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (_) => const LoginPage()),
+        MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
       );
     } finally {
-      if (mounted) setState(() => _isLoading = false);
+      setState(() => _isLoading = false);
     }
   }
 
@@ -59,223 +69,221 @@ class _SignUpPageState extends State<SignUpPage> {
     final scheme = theme.colorScheme;
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      appBar: AppBar(
-        title: const Text('Sign Up'),
-        centerTitle: true,
-      ),
-      body: SafeArea(
-        child: Center(
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(30.0),
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(30.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Text(
-                    'Create Your Account',
-                    style: theme.textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Header
+                Text(
+                  'Autonomous UAV',
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 32,
+                    color: theme.textTheme.headlineSmall?.color,
                   ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Join Autonomous UAV to get started',
-                    style: theme.textTheme.bodyMedium,
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 32),
+                ),
+                const SizedBox(height: 64),
 
-                  // Full Name
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Full Name',
-                      border: OutlineInputBorder(),
-                    ),
-                    textInputAction: TextInputAction.next,
-                    validator: (v) =>
-                        v == null || v.isEmpty ? 'Enter your full name' : null,
+                Text(
+                  'Create an account',
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 26,
+                    color: theme.textTheme.titleLarge?.color,
                   ),
-                  const SizedBox(height: 16),
+                ),
+                const SizedBox(height: 6),
 
-                  // Email
-                  TextFormField(
-                    controller: _emailController,
-                    decoration: const InputDecoration(
-                      labelText: 'Email Address',
-                      hintText: 'email@domain.com',
-                      border: OutlineInputBorder(),
-                    ),
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    validator: (v) {
-                      if (v == null || v.isEmpty) return 'Enter your email';
-                      if (!v.contains('@')) return 'Enter a valid email';
-                      return null;
-                    },
+                Text(
+                  'Enter your details to register for this app',
+                  style: TextStyle(
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.normal,
+                    fontSize: 18,
+                    color: theme.textTheme.bodyMedium?.color,
                   ),
-                  const SizedBox(height: 16),
+                ),
+                const SizedBox(height: 26),
 
-                  // Password
-                  TextFormField(
-                    controller: _passwordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Password',
-                      border: OutlineInputBorder(),
-                    ),
-                    textInputAction: TextInputAction.next,
-                    validator: (v) {
-                      if (v == null || v.isEmpty) return 'Enter your password';
-                      if (v.length < 6) {
-                        return 'Password must be at least 6 characters';
-                      }
-                      return null;
-                    },
+                // Email
+                TextField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
+                    labelText: 'Email',
+                    hintText: 'email@domain.com',
+                    border: OutlineInputBorder(),
                   ),
-                  const SizedBox(height: 16),
+                ),
+                const SizedBox(height: 16),
 
-                  // Confirm Password
-                  TextFormField(
-                    controller: _confirmPasswordController,
-                    obscureText: true,
-                    decoration: const InputDecoration(
-                      labelText: 'Confirm Password',
-                      border: OutlineInputBorder(),
-                    ),
-                    textInputAction: TextInputAction.done,
-                    validator: (v) {
-                      if (v != _passwordController.text) {
-                        return 'Passwords do not match';
-                      }
-                      return null;
-                    },
+                // Password
+                TextField(
+                  controller: _passwordController,
+                  obscureText: true,
+                  textInputAction: TextInputAction.next,
+                  decoration: const InputDecoration(
+                    labelText: 'Password',
+                    border: OutlineInputBorder(),
                   ),
-                  const SizedBox(height: 26),
+                ),
+                const SizedBox(height: 16),
 
-                  // Sign Up Button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 49,
-                    child: ElevatedButton(
-                      onPressed: _isLoading ? null : _handleSignUp,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: scheme.primary,
-                        foregroundColor: scheme.onPrimary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                // Confirm Password
+                TextField(
+                  controller: _confirmPasswordController,
+                  obscureText: true,
+                  textInputAction: TextInputAction.done,
+                  decoration: const InputDecoration(
+                    labelText: 'Repeat Password',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                const SizedBox(height: 26),
+
+                // Continue button
+                SizedBox(
+                  width: double.infinity,
+                  height: 49,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _signUp,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: scheme.primary,
+                      foregroundColor: scheme.onPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      child: _isLoading
-                          ? const CircularProgressIndicator(
-                              color: Colors.white,
-                            )
-                          : const Text(
-                              'Continue',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                    ),
+                    child: _isLoading
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            'Continue',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
                             ),
-                    ),
+                          ),
                   ),
-                  const SizedBox(height: 26),
+                ),
+                const SizedBox(height: 26),
 
-                  // Divider
-                  Row(
-                    children: [
-                      Expanded(
-                          child:
-                              Divider(color: theme.dividerColor, thickness: 1)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                        child: Text(
-                          'or',
-                          style: theme.textTheme.bodyMedium,
-                        ),
-                      ),
-                      Expanded(
-                          child:
-                              Divider(color: theme.dividerColor, thickness: 1)),
-                    ],
-                  ),
-                  const SizedBox(height: 26),
-
-                  // Continue with Google
-                  SizedBox(
-                    width: double.infinity,
-                    height: 49,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        // TODO: Google sign up
-                      },
-                      icon: Icon(Icons.g_mobiledata, color: scheme.onSurface),
-                      label: const Text(
-                        'Continue with Google',
+                // Divider with "or"
+                Row(
+                  children: [
+                    Expanded(child: Divider(color: theme.dividerColor, thickness: 1)),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        'or',
                         style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: scheme.surfaceVariant,
-                        foregroundColor: scheme.onSurface,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          fontFamily: 'Roboto',
+                          fontSize: 14,
+                          color: scheme.onSurfaceVariant,
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
+                    Expanded(child: Divider(color: theme.dividerColor, thickness: 1)),
+                  ],
+                ),
+                const SizedBox(height: 26),
 
-                  // Continue with Apple
-                  SizedBox(
-                    width: double.infinity,
-                    height: 49,
-                    child: ElevatedButton.icon(
-                      onPressed: () {
-                        // TODO: Apple sign up
-                      },
-                      icon:
-                          Icon(Icons.apple, color: scheme.onSurface, size: 24),
-                      label: const Text(
-                        'Continue with Apple',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: scheme.surfaceVariant,
-                        foregroundColor: scheme.onSurface,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-
-                  // Already have account
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (_) => const LoginPage()),
+                // Google button
+                SizedBox(
+                  width: double.infinity,
+                  height: 49,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Google signup not yet implemented')),
                       );
                     },
-                    child: Text(
-                      'Already have an account? Sign In',
-                      textAlign: TextAlign.center,
+                    icon: Icon(Icons.g_mobiledata, color: scheme.onSurface),
+                    label: const Text(
+                      'Continue with Google',
                       style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: scheme.surfaceVariant,
+                      foregroundColor: scheme.onSurface,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Apple button
+                SizedBox(
+                  width: double.infinity,
+                  height: 49,
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Apple signup not yet implemented')),
+                      );
+                    },
+                    icon: Icon(Icons.apple, color: scheme.onSurface, size: 24),
+                    label: const Text(
+                      'Continue with Apple',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: scheme.surfaceVariant,
+                      foregroundColor: scheme.onSurface,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+
+                // Already have an account
+                Center(
+                  child: RichText(
+                    text: TextSpan(
+                      text: 'Already have an account? ',
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
                         fontSize: 14,
                         color: scheme.onSurfaceVariant,
                       ),
+                      children: [
+                        TextSpan(
+                          text: 'Sign In',
+                          style: TextStyle(
+                            color: scheme.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const LoginPage(),
+                                ),
+                              );
+                            },
+                        ),
+                      ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
