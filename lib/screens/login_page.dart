@@ -1,6 +1,6 @@
+import 'package:autonomousuav/screens/pair_device_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'main_app.dart';
 import 'signup_page.dart';
 import '../auth_service.dart';
 
@@ -42,7 +42,7 @@ class LoginPageState extends State<LoginPage> {
       if (mounted) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (_) => const MainApp()),
+          MaterialPageRoute(builder: (_) => const PairDeviceMenu()),
         );
       }
     } on FirebaseAuthException catch (e) {
