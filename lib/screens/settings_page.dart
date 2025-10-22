@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'login_page.dart';
-import '../theme_controller.dart';
 import '../widgets/app_header.dart';
 import '../widgets/notifications_sheet.dart';
 
@@ -13,7 +12,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   bool notification = false;
-  bool darkMode = AppTheme.themeMode.value == ThemeMode.dark;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -63,17 +62,7 @@ class _SettingsPageState extends State<SettingsPage> {
                         });
                       },
                     ),
-                    SwitchListTile(
-                      title: const Text('Dark Mode'),
-                      secondary: const Icon(Icons.dark_mode),
-                      value: darkMode,
-                      onChanged: (bool value) {
-                        setState(() {
-                          darkMode = value;
-                        });
-                        AppTheme.set(value ? ThemeMode.dark : ThemeMode.light);
-                      },
-                    ),
+                    
                     ListTile(
                       leading: const Icon(Icons.share),
                       title: const Text('Share App'),

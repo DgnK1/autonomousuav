@@ -39,7 +39,9 @@ class _HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           color: isDarkMode ? const Color(0xFF3B3B3B) : const Color(0xFFF5F5F5),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: isDarkMode ? Colors.white24 : Colors.black12),
+          border: Border.all(
+            color: isDarkMode ? Colors.white24 : Colors.black12,
+          ),
         ),
         padding: const EdgeInsets.all(12),
         child: Column(
@@ -234,7 +236,8 @@ class _HomePageState extends State<HomePage> {
                     // Stats grid (responsive tile height)
                     Builder(
                       builder: (context) {
-                        final isDark = Theme.of(context).brightness == Brightness.dark;
+                        final isDark =
+                            Theme.of(context).brightness == Brightness.dark;
                         final tiles = <Widget>[
                           _statCard(
                             ctx: context,
@@ -242,7 +245,9 @@ class _HomePageState extends State<HomePage> {
                             iconColor: const Color(0xFF1565C0),
                             title: 'Soil Moisture',
                             value: 'Dry',
-                            valueColor: isDark ? Colors.white : const Color(0xFFB00020),
+                            valueColor: isDark
+                                ? Colors.white
+                                : const Color(0xFFB00020),
                             isAverage: true,
                             averageTooltip:
                                 'Average soil moisture across analyzed plots',
@@ -253,7 +258,9 @@ class _HomePageState extends State<HomePage> {
                             iconColor: const Color(0xFF00897B),
                             title: 'Soil pH Level',
                             value: '7',
-                            valueColor: isDark ? Colors.white : const Color(0xFF2E7D32),
+                            valueColor: isDark
+                                ? Colors.white
+                                : const Color(0xFF2E7D32),
                             isAverage: true,
                             averageLabel: 'Neutral',
                             averageTooltip:
@@ -265,7 +272,9 @@ class _HomePageState extends State<HomePage> {
                             iconColor: const Color(0xFFE53935),
                             title: 'Soil Temperature',
                             value: '25°C',
-                            valueColor: isDark ? Colors.white : const Color(0xFF1565C0),
+                            valueColor: isDark
+                                ? Colors.white
+                                : const Color(0xFF1565C0),
                             isAverage: true,
                             averageTooltip:
                                 'Average soil temperature across analyzed plots',
@@ -277,7 +286,9 @@ class _HomePageState extends State<HomePage> {
                             iconColor: const Color(0xFF2E7D32),
                             title: 'Battery Left',
                             value: '85%',
-                            valueColor: isDark ? Colors.white : const Color(0xFF2E7D32),
+                            valueColor: isDark
+                                ? Colors.white
+                                : const Color(0xFF2E7D32),
                             valueFontSize: 42,
                           ),
                         ];
@@ -347,8 +358,9 @@ class _HomePageState extends State<HomePage> {
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 12,
-                              color:
-                                  isDarkTheme ? Colors.white70 : Colors.black54,
+                              color: isDarkTheme
+                                  ? Colors.white70
+                                  : Colors.black54,
                             ),
                           ),
                         ),
@@ -372,8 +384,9 @@ class _HomePageState extends State<HomePage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                isDarkTheme ? const Color(0xFF3B3B3B) : Colors.blue,
+                            backgroundColor: isDarkTheme
+                                ? const Color(0xFF3B3B3B)
+                                : Colors.blue,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -397,8 +410,9 @@ class _HomePageState extends State<HomePage> {
                             // TODO: Hook start action
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor:
-                                isDarkTheme ? const Color(0xFF3B3B3B) : Colors.black,
+                            backgroundColor: isDarkTheme
+                                ? const Color(0xFF3B3B3B)
+                                : Colors.black,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
