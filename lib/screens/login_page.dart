@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'signup_page.dart';
 import '../auth_service.dart';
 
-
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
@@ -29,9 +28,9 @@ class LoginPageState extends State<LoginPage> {
     final password = _passwordController.text.trim();
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill all fields')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Please fill all fields')));
       return;
     }
 
@@ -46,9 +45,9 @@ class LoginPageState extends State<LoginPage> {
         );
       }
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.message ?? 'Login failed')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text(e.message ?? 'Login failed')));
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -58,6 +57,7 @@ class LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final scheme = theme.colorScheme;
+    final isLight = theme.brightness == Brightness.light;
 
     return Scaffold(
       body: Center(
@@ -67,15 +67,13 @@ class LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Autonomous UAV',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 32,
-                    color: scheme.onBackground,
-                  ),
+                Image.asset(
+                  isLight
+                      ? 'assets/images/SOARISV2NOBGB.png'
+                      : 'assets/images/SOARISV2NOBGW.png',
+                  height: 240,
+                  fit: BoxFit.fill,
                 ),
-                const SizedBox(height: 64),
                 Text(
                   'Login to your account',
                   style: TextStyle(
@@ -182,16 +180,12 @@ class LoginPageState extends State<LoginPage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (_) => const SignUpPage(),
-                        ),
+                        MaterialPageRoute(builder: (_) => const SignUpPage()),
                       );
                     },
                     child: const Text(
                       "Don't have an account? Sign Up",
-                      style: TextStyle(
-                        decoration: TextDecoration.underline,
-                      ),
+                      style: TextStyle(decoration: TextDecoration.underline),
                     ),
                   ),
                 ),

@@ -37,9 +37,9 @@ class _SignUpPageState extends State<SignUpPage> {
     }
 
     if (password != confirmPassword) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Passwords do not match.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('Passwords do not match.')));
       return;
     }
 
@@ -55,9 +55,9 @@ class _SignUpPageState extends State<SignUpPage> {
         MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -77,18 +77,6 @@ class _SignUpPageState extends State<SignUpPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                // Header
-                Text(
-                  'Autonomous UAV',
-                  style: TextStyle(
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 32,
-                    color: theme.textTheme.headlineSmall?.color,
-                  ),
-                ),
-                const SizedBox(height: 64),
-
                 Text(
                   'Create an account',
                   style: TextStyle(
@@ -177,7 +165,9 @@ class _SignUpPageState extends State<SignUpPage> {
                 // Divider with "or"
                 Row(
                   children: [
-                    Expanded(child: Divider(color: theme.dividerColor, thickness: 1)),
+                    Expanded(
+                      child: Divider(color: theme.dividerColor, thickness: 1),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Text(
@@ -189,7 +179,9 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                     ),
-                    Expanded(child: Divider(color: theme.dividerColor, thickness: 1)),
+                    Expanded(
+                      child: Divider(color: theme.dividerColor, thickness: 1),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 26),
@@ -201,7 +193,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Google signup not yet implemented')),
+                        const SnackBar(
+                          content: Text('Google signup not yet implemented'),
+                        ),
                       );
                     },
                     icon: Icon(Icons.g_mobiledata, color: scheme.onSurface),
@@ -230,7 +224,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: ElevatedButton.icon(
                     onPressed: () {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Apple signup not yet implemented')),
+                        const SnackBar(
+                          content: Text('Apple signup not yet implemented'),
+                        ),
                       );
                     },
                     icon: Icon(Icons.apple, color: scheme.onSurface, size: 24),
