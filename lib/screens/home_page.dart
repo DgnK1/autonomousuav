@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import '../widgets/app_header.dart';
 import '../widgets/notifications_sheet.dart';
 import '../screens/soil_monitoring_page.dart';
 import '../screens/mapping_page.dart';
 import '../utils/responsive_utils.dart';
+import '../providers/flight_mode_provider.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,7 +21,6 @@ class _HomePageState extends State<HomePage>
   bool isMapping = false;
   bool hasMapped = false;
   bool isAnalyzing = false;
-  String flightMode = "Auto";
 
   GoogleMapController? mapController;
 
@@ -148,6 +149,10 @@ class _HomePageState extends State<HomePage>
   }
 
   void _selectMode() async {
+    final flightModeProvider = Provider.of<FlightModeProvider>(
+      context,
+      listen: false,
+    );
     final result = await showModalBottomSheet<String>(
       context: context,
       backgroundColor: Colors.grey[900],
@@ -178,15 +183,15 @@ class _HomePageState extends State<HomePage>
     );
 
     if (result != null) {
-      setState(() => flightMode = result);
+      flightModeProvider.setFlightMode(result);
     }
   }
 
   Widget _mapSection() {
     final responsive = ResponsiveUtils(context);
-    // Map takes 28% of screen height - adapts automatically
+    // Map takes 20% of screen height - adapts automatically
     return SizedBox(
-      height: responsive.hp(28),
+      height: responsive.hp(26),
       child: Stack(
         children: [
           GoogleMap(
@@ -336,6 +341,7 @@ class _HomePageState extends State<HomePage>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final responsive = ResponsiveUtils(context);
+    final flightMode = Provider.of<FlightModeProvider>(context).flightMode;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -487,7 +493,7 @@ class _HomePageState extends State<HomePage>
                           ),
                         ),
                       ),
-                      SizedBox(height: responsive.hp(1)),
+                      SizedBox(height: responsive.hp(10)),
                     ],
                   ),
                 ),

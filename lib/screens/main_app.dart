@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'home_page.dart';
 import 'activity_page.dart';
 import 'manual_controls_page.dart';
 import 'settings_page.dart';
+import '../providers/flight_mode_provider.dart';
 
 class MainApp extends StatefulWidget {
   const MainApp({super.key});
@@ -34,15 +36,47 @@ class _MainApp extends State<MainApp> {
     super.dispose();
   }
 
+  void _showManualModeRequiredDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Manual Mode Required'),
+        content: const Text(
+          'Please switch to Manual Mode from the Home page to access Manual Controls.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isLight = Theme.of(context).brightness == Brightness.light;
+    final flightModeProvider = Provider.of<FlightModeProvider>(context);
+    final isManualMode = flightModeProvider.isManualMode;
+    
     return Scaffold(
       backgroundColor: const Color(0xFFF2F2F2),
       // Swipe between tabs
       body: PageView(
         controller: _pageController,
-        onPageChanged: (index) => setState(() => _currentIndex = index),
+        onPageChanged: (index) {
+          // Prevent navigating to Manual Controls (index 2) when in Auto mode
+          if (index == 2 && !isManualMode) {
+            // Revert to previous page
+            Future.microtask(() {
+              _pageController.jumpToPage(_currentIndex);
+              _showManualModeRequiredDialog();
+            });
+            return;
+          }
+          setState(() => _currentIndex = index);
+        },
         children: _pages,
       ),
       bottomNavigationBar: Container(
@@ -64,6 +98,11 @@ class _MainApp extends State<MainApp> {
           unselectedItemColor: isLight ? Colors.black54 : null,
           currentIndex: _currentIndex,
           onTap: (int index) {
+            // Prevent tapping Manual Controls (index 2) when in Auto mode
+            if (index == 2 && !isManualMode) {
+              _showManualModeRequiredDialog();
+              return;
+            }
             setState(() => _currentIndex = index);
             _pageController.animateToPage(
               index,
@@ -71,14 +110,22 @@ class _MainApp extends State<MainApp> {
               curve: Curves.easeInOut,
             );
           },
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'HOME'),
-            BottomNavigationBarItem(
+          items: [
+            const BottomNavigationBarItem(icon: Icon(Icons.home), label: 'HOME'),
+            const BottomNavigationBarItem(
               icon: Icon(Icons.show_chart_rounded),
               label: 'ACTIVITY',
             ),
-            BottomNavigationBarItem(icon: Icon(Icons.gamepad), label: 'MANUAL'),
             BottomNavigationBarItem(
+              icon: Icon(
+                Icons.gamepad,
+                color: isManualMode 
+                  ? (isLight ? Colors.black54 : null) 
+                  : Colors.grey.shade400,
+              ),
+              label: 'MANUAL',
+            ),
+            const BottomNavigationBarItem(
               icon: Icon(Icons.settings),
               label: 'SETTINGS',
             ),

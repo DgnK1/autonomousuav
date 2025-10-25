@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'screens/login_page.dart';
+import 'providers/flight_mode_provider.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return ChangeNotifierProvider(
+      create: (_) => FlightModeProvider(),
+      child: MaterialApp(
       title: 'Autonomous UAV',
       debugShowCheckedModeBanner: false,
       // Light and Dark themes
@@ -55,6 +59,7 @@ class MyApp extends StatelessWidget {
       ),
       themeMode: ThemeMode.system,
       home: LoginPage(),
+      ),
     );
   }
 }
