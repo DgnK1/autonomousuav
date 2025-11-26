@@ -28,10 +28,7 @@ class _PairDeviceMenuState extends State<PairDeviceMenu> {
               const Text(
                 'Pair a Device',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 20),
 
@@ -96,6 +93,7 @@ class _PairDeviceMenuState extends State<PairDeviceMenu> {
                   style: TextStyle(color: Colors.red),
                 ),
               ),
+              const SizedBox(height: 40),
             ],
           ),
         );
@@ -108,9 +106,9 @@ class _PairDeviceMenuState extends State<PairDeviceMenu> {
       pairedDevices.add('Drone (${method}) ${pairedDevices.length + 1}');
     });
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Device paired via $method')),
-    );
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text('Device paired via $method')));
   }
 
   @override
@@ -142,8 +140,10 @@ class _PairDeviceMenuState extends State<PairDeviceMenu> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: ListTile(
-                        leading: const Icon(Icons.airplanemode_active,
-                            color: Colors.white),
+                        leading: const Icon(
+                          Icons.airplanemode_active,
+                          color: Colors.white,
+                        ),
                         title: Text(
                           device,
                           style: const TextStyle(
@@ -182,8 +182,11 @@ class _PairDeviceMenuState extends State<PairDeviceMenu> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: const [
-                      Icon(Icons.airplanemode_active,
-                          color: Colors.white, size: 100),
+                      Icon(
+                        Icons.airplanemode_active,
+                        color: Colors.white,
+                        size: 100,
+                      ),
                       SizedBox(height: 30),
                       Text(
                         'Pair Your Drone Device',
@@ -197,8 +200,7 @@ class _PairDeviceMenuState extends State<PairDeviceMenu> {
                       Text(
                         'Connect your UAV device to begin monitoring.',
                         textAlign: TextAlign.center,
-                        style:
-                            TextStyle(color: Colors.white70, fontSize: 16),
+                        style: TextStyle(color: Colors.white70, fontSize: 16),
                       ),
                     ],
                   ),
@@ -228,6 +230,7 @@ class _PairDeviceMenuState extends State<PairDeviceMenu> {
                 ),
               ),
             ),
+            SizedBox(height: 24),
           ],
         ),
       ),

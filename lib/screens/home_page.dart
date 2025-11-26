@@ -21,6 +21,8 @@ class _HomePageState extends State<HomePage>
   bool isMapping = false;
   bool hasMapped = false;
   bool isAnalyzing = false;
+  bool isMapExpanded = false;
+  bool _hasShownCompletionDialog = false;
 
   GoogleMapController? mapController;
 
@@ -81,6 +83,34 @@ class _HomePageState extends State<HomePage>
             isAnalyzing = false;
             fillProgress = 1.0;
           });
+
+          if (!_hasShownCompletionDialog && mounted) {
+            _hasShownCompletionDialog = true;
+            Future.microtask(() {
+              showDialog<void>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Mapping Complete'),
+                  content: const Text(
+                    'Soil mapping and analysis are finished.',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        if (mounted) {
+                          setState(() {
+                            isMapExpanded = false;
+                          });
+                        }
+                      },
+                      child: const Text('OK'),
+                    ),
+                  ],
+                ),
+              );
+            });
+          }
         }
       }
     });
@@ -93,6 +123,33 @@ class _HomePageState extends State<HomePage>
   }
 
   Future<void> _toggleMapping() async {
+    // If user is in Manual mode and no mapping is currently running,
+    // show an info dialog instead of starting Auto mapping.
+    final flightModeProvider = Provider.of<FlightModeProvider>(
+      context,
+      listen: false,
+    );
+    final isManualMode = flightModeProvider.isManualMode;
+
+    if (isManualMode && !isMapping && !isAnalyzing) {
+      await showDialog<void>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Manual Mode Active'),
+          content: const Text(
+            'You are currently in Manual Mode. Use the MANUAL tab at the bottom to control the drone and define paths.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('OK'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
     if (hasMapped && !isMapping && !isAnalyzing) {
       final confirm = await showDialog<bool>(
         context: context,
@@ -133,17 +190,31 @@ class _HomePageState extends State<HomePage>
         _controller.reset();
         _controller.forward();
         isMapping = true;
+        isMapExpanded = true; // show large map when mapping starts
+        _hasShownCompletionDialog = false;
       });
 
-      Navigator.push(
+      final result = await Navigator.push(
         context,
         MaterialPageRoute(builder: (context) => const MappingPage()),
       );
+
+      if (result == 'cancel_mapping') {
+        setState(() {
+          _controller.stop();
+          isMapping = false;
+          isAnalyzing = false;
+          hasMapped = false;
+          fillProgress = 0.0;
+          isMapExpanded = false;
+        });
+      }
     } else {
       setState(() {
         _controller.stop();
         isMapping = false;
         isAnalyzing = false;
+        isMapExpanded = false;
       });
     }
   }
@@ -159,26 +230,29 @@ class _HomePageState extends State<HomePage>
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ListTile(
-            leading: const Icon(Icons.auto_mode, color: Colors.white),
-            title: const Text(
-              'Auto Mode',
-              style: TextStyle(color: Colors.white),
+      builder: (context) => Padding(
+        padding: const EdgeInsets.only(bottom: 48),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.auto_mode, color: Colors.white),
+              title: const Text(
+                'Auto Mode',
+                style: TextStyle(color: Colors.white),
+              ),
+              onTap: () => Navigator.pop(context, 'Auto'),
             ),
-            onTap: () => Navigator.pop(context, 'Auto'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.flight, color: Colors.white),
-            title: const Text(
-              'Manual Mode',
-              style: TextStyle(color: Colors.white),
+            ListTile(
+              leading: const Icon(Icons.flight, color: Colors.white),
+              title: const Text(
+                'Manual Mode',
+                style: TextStyle(color: Colors.white),
+              ),
+              onTap: () => Navigator.pop(context, 'Manual'),
             ),
-            onTap: () => Navigator.pop(context, 'Manual'),
-          ),
-        ],
+          ],
+        ),
       ),
     );
 
@@ -189,51 +263,28 @@ class _HomePageState extends State<HomePage>
 
   Widget _mapSection() {
     final responsive = ResponsiveUtils(context);
-    // Map takes 20% of screen height - adapts automatically
+    // Map height adapts based on whether it is expanded
+    // Expanded height uses ~70% of screen height
+    final mapHeight = isMapExpanded ? responsive.hp(70) : responsive.hp(26);
+
     return SizedBox(
-      height: responsive.hp(26),
+      height: mapHeight,
       child: Stack(
         children: [
-          GoogleMap(
-            onMapCreated: (controller) => mapController = controller,
-            initialCameraPosition: const CameraPosition(
-              target: LatLng(37.42796133580664, -122.085749655962),
-              zoom: 16,
+          // Base map
+          _buildGoogleMap(),
+          // When not expanded, place a transparent tap layer over the map
+          if (!isMapExpanded)
+            Positioned.fill(
+              child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: () {
+                  setState(() {
+                    isMapExpanded = true;
+                  });
+                },
+              ),
             ),
-            markers: {
-              if (hasMapped || isMapping || isAnalyzing)
-                Marker(
-                  markerId: const MarkerId('drone'),
-                  position: dronePosition,
-                  icon: BitmapDescriptor.defaultMarkerWithHue(
-                    BitmapDescriptor.hueAzure,
-                  ),
-                ),
-            },
-            polygons: {
-              if (hasMapped || isAnalyzing)
-                Polygon(
-                  polygonId: const PolygonId('mapped_area'),
-                  fillColor: Colors.blue.withOpacity(0.2 + fillProgress * 0.3),
-                  strokeColor: Colors.blueAccent,
-                  strokeWidth: 2,
-                  points: [
-                    mappedArea.southwest,
-                    LatLng(
-                      mappedArea.southwest.latitude,
-                      mappedArea.northeast.longitude,
-                    ),
-                    mappedArea.northeast,
-                    LatLng(
-                      mappedArea.northeast.latitude,
-                      mappedArea.southwest.longitude,
-                    ),
-                  ],
-                ),
-            },
-            myLocationEnabled: false,
-            zoomControlsEnabled: false,
-          ),
           if (isMapping || isAnalyzing)
             Align(
               alignment: Alignment.topCenter,
@@ -258,8 +309,93 @@ class _HomePageState extends State<HomePage>
                 ),
               ),
             ),
+          if (isMapExpanded)
+            Positioned(
+              top: 8,
+              left: 8,
+              child: CircleAvatar(
+                backgroundColor: Colors.black54,
+                radius: 18,
+                child: IconButton(
+                  padding: EdgeInsets.zero,
+                  icon: const Icon(Icons.close, size: 18, color: Colors.white),
+                  onPressed: () {
+                    setState(() {
+                      isMapExpanded = false; // collapse but keep mapping state
+                    });
+                  },
+                ),
+              ),
+            ),
+          if (isMapExpanded && (isMapping || isAnalyzing))
+            Positioned(
+              left: 12,
+              right: 12,
+              bottom: 12,
+              child: ElevatedButton.icon(
+                onPressed: _toggleMapping,
+                icon: const Icon(Icons.stop_circle, color: Colors.white),
+                label: const Text(
+                  'Cancel Mapping',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.redAccent,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              ),
+            ),
         ],
       ),
+    );
+  }
+
+  Widget _buildGoogleMap() {
+    return GoogleMap(
+      onMapCreated: (controller) => mapController = controller,
+      initialCameraPosition: const CameraPosition(
+        target: LatLng(37.42796133580664, -122.085749655962),
+        zoom: 16,
+      ),
+      markers: {
+        if (hasMapped || isMapping || isAnalyzing)
+          Marker(
+            markerId: const MarkerId('drone'),
+            position: dronePosition,
+            icon: BitmapDescriptor.defaultMarkerWithHue(
+              BitmapDescriptor.hueAzure,
+            ),
+          ),
+      },
+      polygons: {
+        if (hasMapped || isAnalyzing)
+          Polygon(
+            polygonId: const PolygonId('mapped_area'),
+            fillColor: Colors.blue.withOpacity(0.2 + fillProgress * 0.3),
+            strokeColor: Colors.blueAccent,
+            strokeWidth: 2,
+            points: [
+              mappedArea.southwest,
+              LatLng(
+                mappedArea.southwest.latitude,
+                mappedArea.northeast.longitude,
+              ),
+              mappedArea.northeast,
+              LatLng(
+                mappedArea.northeast.latitude,
+                mappedArea.southwest.longitude,
+              ),
+            ],
+          ),
+      },
+      myLocationEnabled: false,
+      zoomControlsEnabled: false,
     );
   }
 
@@ -360,143 +496,167 @@ class _HomePageState extends State<HomePage>
             Expanded(
               child: Padding(
                 padding: EdgeInsets.all(responsive.wp(2)),
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      _mapSection(),
-                      SizedBox(height: responsive.hp(0.8)),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: _toggleMapping,
-                              icon: Icon(
-                                isMapping || isAnalyzing
-                                    ? Icons.stop_circle
-                                    : Icons.play_circle,
-                                color: Colors.black,
-                              ),
-                              label: Text(
-                                isMapping || isAnalyzing
-                                    ? "Cancel Mapping"
-                                    : "Start Mapping",
-                                style: const TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
+                child: isMapExpanded
+                    // When map is expanded, show only the map (no scrolling content)
+                    ? Column(children: [_mapSection()])
+                    // When collapsed, show the original scrollable dashboard
+                    : SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            _mapSection(),
+                            SizedBox(height: responsive.hp(0.8)),
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: _toggleMapping,
+                                    icon: Icon(
+                                      isMapping || isAnalyzing
+                                          ? Icons.stop_circle
+                                          : Icons.play_circle,
+                                      color: Colors.black,
+                                    ),
+                                    label: Text(
+                                      isMapping || isAnalyzing
+                                          ? "Cancel Mapping"
+                                          : "Start Mapping",
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: isMapping || isAnalyzing
+                                          ? Colors.redAccent
+                                          : Colors.lightGreenAccent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              ),
+                                SizedBox(width: responsive.wp(2.5)),
+                                Expanded(
+                                  child: ElevatedButton.icon(
+                                    onPressed: _selectMode,
+                                    icon: const Icon(
+                                      Icons.settings,
+                                      color: Colors.black,
+                                    ),
+                                    label: Text(
+                                      "Mode: $flightMode",
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.orangeAccent,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 14,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: responsive.hp(1)),
+                            GridView.count(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              crossAxisCount: responsive.gridColumns,
+                              mainAxisSpacing: responsive.hp(1.2),
+                              crossAxisSpacing: responsive.wp(3),
+                              childAspectRatio: responsive.cardAspectRatio,
+                              children: [
+                                _statCard(
+                                  icon: Icons.water_drop,
+                                  title: 'Soil Moisture',
+                                  value: 'Dry',
+                                  iconColor: Colors.blueAccent,
+                                  isAverage: true,
+                                ),
+                                _statCard(
+                                  icon: Icons.science_outlined,
+                                  title: 'Soil pH Level',
+                                  value: '7.0',
+                                  iconColor: Colors.green,
+                                  isAverage: true,
+                                ),
+                                _statCard(
+                                  icon: Icons.thermostat,
+                                  title: 'Soil Temp',
+                                  value: '25°C',
+                                  iconColor: Colors.redAccent,
+                                  isAverage: true,
+                                ),
+                                _statCard(
+                                  icon: Icons.battery_6_bar,
+                                  title: 'Battery',
+                                  value: '85%',
+                                  iconColor: Colors.teal,
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: responsive.hp(1.2)),
+                            ElevatedButton(
+                              onPressed: () {
+                                if (hasMapped && !isMapping && !isAnalyzing) {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const SoilMonitoringPage(),
+                                    ),
+                                  );
+                                } else {
+                                  showDialog<void>(
+                                    context: context,
+                                    builder: (context) => AlertDialog(
+                                      title: const Text('Finish Mapping First'),
+                                      content: const Text(
+                                        'Please complete the mapping and analysis before viewing the summary.',
+                                      ),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context),
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }
+                              },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: isMapping || isAnalyzing
-                                    ? Colors.redAccent
-                                    : Colors.lightGreenAccent,
+                                backgroundColor: Colors.blue,
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: responsive.wp(8),
+                                  vertical: responsive.hp(1.5),
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10),
                                 ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                ),
                               ),
-                            ),
-                          ),
-                          SizedBox(width: responsive.wp(2.5)),
-                          Expanded(
-                            child: ElevatedButton.icon(
-                              onPressed: _selectMode,
-                              icon: const Icon(
-                                Icons.settings,
-                                color: Colors.black,
-                              ),
-                              label: Text(
-                                "Mode: $flightMode",
-                                style: const TextStyle(
-                                  color: Colors.black,
+                              child: Text(
+                                'Summary',
+                                style: TextStyle(
+                                  fontSize: responsive.sp(20),
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.orangeAccent,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 14,
-                                ),
-                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: responsive.hp(1)),
-                      GridView.count(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        crossAxisCount: responsive.gridColumns,
-                        mainAxisSpacing: responsive.hp(1.2),
-                        crossAxisSpacing: responsive.wp(3),
-                        childAspectRatio: responsive.cardAspectRatio,
-                        children: [
-                          _statCard(
-                            icon: Icons.water_drop,
-                            title: 'Soil Moisture',
-                            value: 'Dry',
-                            iconColor: Colors.blueAccent,
-                            isAverage: true,
-                          ),
-                          _statCard(
-                            icon: Icons.science_outlined,
-                            title: 'Soil pH Level',
-                            value: '7.0',
-                            iconColor: Colors.green,
-                            isAverage: true,
-                          ),
-                          _statCard(
-                            icon: Icons.thermostat,
-                            title: 'Soil Temp',
-                            value: '25°C',
-                            iconColor: Colors.redAccent,
-                            isAverage: true,
-                          ),
-                          _statCard(
-                            icon: Icons.battery_6_bar,
-                            title: 'Battery',
-                            value: '85%',
-                            iconColor: Colors.teal,
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: responsive.hp(1.2)),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const SoilMonitoringPage(),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: responsive.wp(8),
-                            vertical: responsive.hp(1.5),
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        child: Text(
-                          'Summary',
-                          style: TextStyle(
-                            fontSize: responsive.sp(20),
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
+                            SizedBox(height: responsive.hp(10)),
+                          ],
                         ),
                       ),
-                      SizedBox(height: responsive.hp(10)),
-                    ],
-                  ),
-                ),
               ),
             ),
           ],

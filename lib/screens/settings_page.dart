@@ -118,6 +118,53 @@ class _SettingsPageState extends State<SettingsPage> {
                       },
                     ),
                     ListTile(
+                      leading: const Icon(Icons.history),
+                      title: const Text('Changelog (v1.0.0)'),
+                      onTap: () {
+                        showDialog<void>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Changelog – Version 1.0.0'),
+                            content: const SingleChildScrollView(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'This release includes the following updates:',
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    '• Auto / Manual flight mode separation for mapping and manual controls.',
+                                  ),
+                                  Text(
+                                    '• Expanded mapping view with full-screen map, X close button, and in-map Cancel Mapping.',
+                                  ),
+                                  Text(
+                                    '• Mapping completion dialog that appears when mapping and analysis finish.',
+                                  ),
+                                  Text(
+                                    '• Summary button now requires mapping to be finished and shows a helpful reminder dialog otherwise.',
+                                  ),
+                                  Text(
+                                    '• Soil Monitoring summary view now includes a Next Action recommendation card (irrigate / wait).',
+                                  ),
+                                  Text(
+                                    '• Improved bottom sheets and map interaction (tap to expand, non-scrollable when expanded).',
+                                  ),
+                                ],
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    ),
+                    ListTile(
                       leading: const Icon(Icons.logout),
                       title: const Text('Logout'),
                       onTap: () {
