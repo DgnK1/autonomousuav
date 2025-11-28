@@ -123,8 +123,8 @@ class _SoilMonitoringPageState extends State<SoilMonitoringPage> {
                   scrollDirection: Axis.vertical,
                   child: Column(
                     children: [
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
+                      SizedBox(
+                        width: double.infinity,
                         child: DataTable(
                           headingRowColor: MaterialStateProperty.all(
                             isDark ? Colors.white12 : Colors.grey.shade200,
@@ -137,14 +137,12 @@ class _SoilMonitoringPageState extends State<SoilMonitoringPage> {
                           columns: const [
                             DataColumn(label: Text('Plot')),
                             DataColumn(label: Text('Moisture')),
-                            DataColumn(label: Text('pH')),
                             DataColumn(label: Text('Temp')),
                           ],
                           rows: plots.map((plot) {
                             final id = plot['id'].toString();
                             final title = plot['title'].toString();
                             final moisture = plot['moisture'].toString();
-                            final ph = plot['ph'].toString();
                             final temp = plot['temperature'].toString();
 
                             final isSelected = _selectedPlotId == id;
@@ -168,13 +166,6 @@ class _SoilMonitoringPageState extends State<SoilMonitoringPage> {
                                 DataCell(
                                   Text(
                                     moisture,
-                                    style: TextStyle(color: scheme.onSurface),
-                                  ),
-                                  onTap: () => _goToPlot(plot),
-                                ),
-                                DataCell(
-                                  Text(
-                                    ph,
                                     style: TextStyle(color: scheme.onSurface),
                                   ),
                                   onTap: () => _goToPlot(plot),

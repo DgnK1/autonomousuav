@@ -583,13 +583,6 @@ class _HomePageState extends State<HomePage>
                                   isAverage: true,
                                 ),
                                 _statCard(
-                                  icon: Icons.science_outlined,
-                                  title: 'Soil pH Level',
-                                  value: '7.0',
-                                  iconColor: Colors.green,
-                                  isAverage: true,
-                                ),
-                                _statCard(
                                   icon: Icons.thermostat,
                                   title: 'Soil Temp',
                                   value: '25°C',

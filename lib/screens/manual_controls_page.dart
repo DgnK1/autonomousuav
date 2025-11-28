@@ -197,8 +197,8 @@ class _ManualControlsPageState extends State<ManualControlsPage> {
                       Expanded(
                         child: SingleChildScrollView(
                           scrollDirection: Axis.vertical,
-                          child: SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
+                          child: SizedBox(
+                            width: double.infinity,
                             child: DataTable(
                               headingRowColor: MaterialStateProperty.all(
                                 isDark ? Colors.white12 : Colors.grey.shade200,
@@ -223,12 +223,6 @@ class _ManualControlsPageState extends State<ManualControlsPage> {
                                 ),
                                 DataColumn(
                                   label: Text(
-                                    'pH',
-                                    style: TextStyle(color: scheme.onSurface),
-                                  ),
-                                ),
-                                DataColumn(
-                                  label: Text(
                                     'Temp',
                                     style: TextStyle(color: scheme.onSurface),
                                   ),
@@ -238,7 +232,6 @@ class _ManualControlsPageState extends State<ManualControlsPage> {
                                 final id = plot['id'].toString();
                                 final title = plot['title'].toString();
                                 final moisture = plot['moisture'].toString();
-                                final ph = plot['ph'].toString();
                                 final temp = plot['temperature'].toString();
 
                                 final isSelected = _selectedPlotId == id;
@@ -264,15 +257,6 @@ class _ManualControlsPageState extends State<ManualControlsPage> {
                                     DataCell(
                                       Text(
                                         moisture,
-                                        style: TextStyle(
-                                          color: scheme.onSurface,
-                                        ),
-                                      ),
-                                      onTap: () => _confirmChangeCourse(plot),
-                                    ),
-                                    DataCell(
-                                      Text(
-                                        ph,
                                         style: TextStyle(
                                           color: scheme.onSurface,
                                         ),

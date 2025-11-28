@@ -119,12 +119,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                     ListTile(
                       leading: const Icon(Icons.history),
-                      title: const Text('Changelog (v1.0.0)'),
+                      title: const Text('Changelog (v1.0.1)'),
                       onTap: () {
                         showDialog<void>(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: const Text('Changelog – Version 1.0.0'),
+                            title: const Text('Changelog – Version 1.0.1'),
                             content: const SingleChildScrollView(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -150,6 +150,16 @@ class _SettingsPageState extends State<SettingsPage> {
                                   ),
                                   Text(
                                     '• Improved bottom sheets and map interaction (tap to expand, non-scrollable when expanded).',
+                                  ),
+                                  SizedBox(height: 8),
+                                  Text(
+                                    '• Removed the Soil pH Level stat card from the Home dashboard.',
+                                  ),
+                                  Text(
+                                    '• Removed the pH column from Soil Monitoring and Manual Controls tables.',
+                                  ),
+                                  Text(
+                                    '• Updated Soil Monitoring and Manual Controls tables to stretch full-width with aligned columns (no side whitespace).',
                                   ),
                                 ],
                               ),
