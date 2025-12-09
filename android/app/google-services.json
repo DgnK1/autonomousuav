@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "100494437835",
+    "firebase_url": "https://autonomous-uav-c01d6-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "autonomous-uav-c01d6",
     "storage_bucket": "autonomous-uav-c01d6.firebasestorage.app"
   },
